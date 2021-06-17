@@ -1,8 +1,15 @@
 import axios from "axios";
 const baseUrl = "http://localhost:8550/api";
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
 
-export default function createPet(nombre, especie, raza, color, f_nacimiento) {
+export default function createPet(
+  token,
+  nombre,
+  especie,
+  raza,
+  color,
+  f_nacimiento
+) {
   return new Promise((resolve, reject) => {
     const pet = {
       nombre,

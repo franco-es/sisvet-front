@@ -1,8 +1,8 @@
 import axios from "axios";
 const baseUrl = "http://localhost:8550/api";
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
 
-export default function listPets() {
+export default function listPets(token) {
   return new Promise((resolve, reject) => {
     axios
       .get(`${baseUrl}/pet/all`, { headers: { authorization: token } })

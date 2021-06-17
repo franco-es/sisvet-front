@@ -1,12 +1,23 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams,
+} from "react-router-dom";
 
 // FUNCIONES DE Pets
 import listPets from "../../services/pets/listPets";
 import createPet from "../../services/pets/createPet";
+import Pet from "./Pet";
 
 const Pets = (props) => {
-  const [pets, setPets] = React.useState([]);
+  const [Mascotas, setMascotas] = React.useState([]);
+  const [authToken, setAuthToken] = React.useState(
+    localStorage.getItem("token")
+  );
   const [petNombre, setPetNombre] = React.useState("");
   const [petEspecie, setPetEspecie] = React.useState("");
   const [petRaza, setPetRaza] = React.useState("");
@@ -16,31 +27,35 @@ const Pets = (props) => {
   const [modoEdicion, setModoEdicion] = React.useState(false);
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
+    if (authToken === null) {
       props.history.push("/auth");
     } else {
-      setPets([]);
-      const listAllPets = async () => {
-        const data = await listPets();
-        const pet = data.data.pet;
-        const petData = pet.map((pet) => ({
-          ...pet,
-        }));
-        // console.log(petData);
-        setPets(petData);
-      };
       const user = localStorage.getItem("user");
       setUserAuth(JSON.parse(user));
       listAllPets();
     }
-  }, [setPets, props.history]);
+  }, [props.history]);
+
+  const listAllPets = async () => {
+    await listPets(authToken).then((res) => {
+      console.log(res.data.pet);
+      setMascotas(res.data.pet);
+    });
+  };
 
   const addPet = async (e) => {
     e.preventDefault();
-    await createPet(petNombre, petEspecie, petRaza, petColor, petF_Nacimiento)
+    await createPet(
+      authToken,
+      petNombre,
+      petEspecie,
+      petRaza,
+      petColor,
+      petF_Nacimiento
+    )
       .then((res) => {
         console.log(res);
-        setPets([...pets, { ...res.data.mascota }]);
+        setMascotas([...Mascotas, { ...res.data.mascota }]);
         setPetNombre("");
         setPetEspecie("");
         setPetRaza("");
@@ -51,7 +66,7 @@ const Pets = (props) => {
         console.log(err);
         console.log("ocurrio un error");
       });
-    console.log(pets);
+    console.log(Mascotas);
   };
 
   const editPet = async () => {
@@ -80,10 +95,12 @@ const Pets = (props) => {
               </tr>
             </thead>
             <tbody>
-              {pets.map((pet) => (
+              {Mascotas.map((pet) => (
                 <tr key={pet._id}>
                   <th></th>
-                  <th>{pet.nombre}</th>
+                  <th>
+                    <Link to={`/pets/${pet._id}`}>{pet.nombre}</Link>
+                  </th>
                   <th>{pet.raza}</th>
                   <th>{pet.owner ? pet.owner.nombre : "propietario"}</th>
                   <th>
