@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "http://localhost:8550/api";
+const baseUrl = "https://sis-vet.herokuapp.com/api";
 // const token = localStorage.getItem("token");
 
 export default function listPets(token) {

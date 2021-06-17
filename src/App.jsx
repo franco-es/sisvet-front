@@ -4,7 +4,7 @@ import NavBar from "./components/NavBar";
 import Login from "./components/Users/Login";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Pets from "./components/pets/Pets";
-import Pet from "./components/pets/Pets";
+import Pet from "./components/pets/Pet";
 
 function App() {
   const [authUser, setAuthUser] = React.useState(false);
@@ -19,16 +19,16 @@ function App() {
       <div className="">
         <NavBar auth={authUser} />
         <Switch>
-          <Route path="/pets/:id">
-            <Pet />
-          </Route>
           <Route path="/" exact>
             Ruta de Inicio
           </Route>
           <Route path="/auth">
             <Login />
           </Route>
-          <Route path="/pets" exact>
+          <Route path="/pets/:_id" exact>
+            <Pet />
+          </Route>
+          <Route path="/pets">
             <Pets />
           </Route>
           Ruta de inicio
