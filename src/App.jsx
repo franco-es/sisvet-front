@@ -25,7 +25,7 @@ function App() {
           <Route path="/auth">
             <Login />
           </Route>
-          <Route path="/pets/:_id" exact>
+          <Route path="/pets/:id" exact>
             <Pet />
           </Route>
           <Route path="/pets">

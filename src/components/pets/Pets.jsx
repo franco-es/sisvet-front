@@ -1,17 +1,10 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router-dom";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useParams,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // FUNCIONES DE Pets
 import listPets from "../../services/pets/listPets";
 import createPet from "../../services/pets/createPet";
-import Pet from "./Pet";
 
 const Pets = (props) => {
   const [Mascotas, setMascotas] = React.useState([]);
@@ -38,11 +31,9 @@ const Pets = (props) => {
 
   const listAllPets = async () => {
     await listPets(authToken).then((res) => {
-      const data = res.data.pet
-      const dataMap = data.map(item=>({id : item._id, ...item}))
-      setMascotas(dataMap);
+      console.log(res.data.pet);
+      setMascotas(res.data.pet);
     });
-    console.log(Mascotas)
   };
 
   const addPet = async (e) => {
@@ -98,10 +89,10 @@ const Pets = (props) => {
             </thead>
             <tbody>
               {Mascotas.map((pet) => (
-                <tr key={pet.id}>
+                <tr key={pet._id}>
                   <th></th>
                   <th>
-                    <Link to={`/pets/${pet.id}`}>{pet.nombre}</Link>
+                    <Link to={`/pets/${pet._id}`}>{pet.nombre}</Link>
                   </th>
                   <th>{pet.raza}</th>
                   <th>{pet.owner ? pet.owner.nombre : "propietario"}</th>
