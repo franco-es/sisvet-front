@@ -3,49 +3,58 @@ import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 
 const AddConsulta = (props) => {
-  const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [date, setDate] = useState('');
+  const [consulta, setConsulta] = useState('');
+  const [tratamiento, setTratamiento] = useState('');
+  const [diagnostico, setDiagnostico] = useState('');
+
+
+  const addConsult = () => {
+
+    props.handelAddConsulta(date, consulta, tratamiento, diagnostico)
+  }
 
   return (
     <>
-      <Button className="add" onClick={handleShow}>
-        <i className="far fa-plus-square"></i>
-      </Button>
-
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={props.show} onHide={props.handleCloseLoginModal}>
         <Modal.Header closeButton>
           <Modal.Title>Consulta Nueva</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={props.addNew}>
+        <Form>
           <Modal.Body>
-            <Form.Control type="date" placeholder="fecha" className="mx-2" />
+            <Form.Control id="date" type="date" placeholder="fecha" className="mx-2" onChange={(e) => setDate(e.target.valueAsDate)} />
             <br />
             <Form.Control
               type="text"
               placeholder="Contenido"
               className="mx-2"
+              id="contenido"
+              onChange={(e) => setConsulta(e.target.value)}
             />
             <br />
             <Form.Control
               type="text"
               placeholder="Tratamiento"
               className="mx-2"
+              id="tratamiento"
+              onChange={(e) => setTratamiento(e.target.value)}
             />
             <br />
             <Form.Control
               type="text"
               placeholder="Diagnostico"
               className="mx-2"
+              id="diagnostico"
+              onChange={(e) => setDiagnostico(e.target.value)}
             />
             <br />
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={props.handleCloseLoginModal}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={addConsult} >
               Agregar Consulta
             </Button>
           </Modal.Footer>

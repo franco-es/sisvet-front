@@ -66,13 +66,13 @@ const Pet = (props) => {
       </Jumbotron>
       <Row className="mt-3">
         <Col className="justify-content center" xs={12} md={4}>
-          <ListConsultas consultas={consultas} />
+          <ListConsultas idPet={id} consultas={consultas} token={token} />
         </Col>
         <Col className="justify-content center" xs={12} md={4}>
-          <ListVacunas vacunas={vacunas} />
+          <ListVacunas idPet={id} vacunas={vacunas} token={token} />
         </Col>
         <Col className="justify-content center" xs={12} md={4}>
-          <ListCirugias cirugias={cirugias} />
+          <ListCirugias idPet={id} cirugias={cirugias} token={token} />
         </Col>
       </Row>
     </div>
