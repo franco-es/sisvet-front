@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.add{
+  background-color: #18c921;
+  border: .3px solid #18c921
+}
+.add:hover{
+  background-color: #07ed13;
+  border: .3px solid #07ed13;
+}

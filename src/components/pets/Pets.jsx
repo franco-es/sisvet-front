@@ -90,18 +90,18 @@ const Pets = (props) => {
             <tbody>
               {Mascotas.map((pet) => (
                 <tr key={pet._id}>
-                  <th></th>
-                  <th>
+                  <td></td>
+                  <td>
                     <Link to={`/pets/${pet._id}`}>{pet.nombre}</Link>
-                  </th>
-                  <th>{pet.raza}</th>
+                  </td>
+                  <td>{pet.raza}</td>
                   <th>{pet.owner ? pet.owner.nombre : "propietario"}</th>
-                  <th>
+                  <td>
                     <i className="far fa-edit" onClick={editPet}></i>
-                  </th>
-                  <th>
+                  </td>
+                  <td>
                     <i className="far fa-trash-alt" onClick={deletePet}></i>
-                  </th>
+                  </td>
                 </tr>
               ))}
             </tbody>

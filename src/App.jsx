@@ -12,7 +12,7 @@ function App() {
   React.useEffect(() => {
     let auth = localStorage.getItem("token");
     auth ? setAuthUser(auth) : setAuthUser(null);
-  });
+  },[]);
 
   return authUser !== false ? (
     <Router>
