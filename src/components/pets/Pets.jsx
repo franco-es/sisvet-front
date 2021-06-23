@@ -141,7 +141,7 @@ const Pets = (props) => {
               value={petColor}
             />
             <input
-              type="text"
+              type="date"
               placeholder="Fecha de Nacimiento"
               className="form-control mb-2"
               onChange={(e) => setPetF_Nacimiento(e.target.value)}

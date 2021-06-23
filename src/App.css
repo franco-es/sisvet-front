@@ -45,3 +45,7 @@
   background-color: #07ed13;
   border: .3px solid #07ed13;
 }
+
+.b-red{
+  border: 1px solid red
+}
