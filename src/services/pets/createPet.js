@@ -18,6 +18,7 @@ export default function createPet(
       color,
       f_nacimiento,
     };
+    console.log(pet);
     axios
       .post(`${baseUrl}/pet/new`, pet, {
         headers: {
