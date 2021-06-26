@@ -21,6 +21,7 @@ const Pet = (props) => {
   const [nombre, setNombre] = useState("");
   const [color, setColor] = useState("");
   const [edad, setEdad] = useState("");
+  const [owner, setOwner] = useState({});
   const [consultas, setConsultas] = useState([]);
   const [vacunas, setVacunas] = useState([]);
   const [cirugias, setCirugias] = useState([]);
@@ -28,6 +29,7 @@ const Pet = (props) => {
   const [raza, setRaza] = useState(localStorage.getItem("token"));
   const [showEditModal, setShowEditModal] = useState(false);
   const { id } = useParams();
+
   useEffect(() => {
     if (token === null) {
       props.history.push("/auth");
@@ -39,7 +41,6 @@ const Pet = (props) => {
   const Uniquepet = async () => {
     await UniquePet(token, id).then((res) => {
       const data = res.data.pet;
-      // console.log(data);
       setNombre(data.nombre);
       setColor(data.color);
       setEspecie(data.especie);
@@ -76,11 +77,17 @@ const Pet = (props) => {
                 <Card.Title className="text-center">{nombre}</Card.Title>
                 <Card.Text>
                   <ListGroup variant="flush">
-                    <ListGroup.Item>Especie: {especie}</ListGroup.Item>
-                    <ListGroup.Item>Pelaje: {color}</ListGroup.Item>
-                    <ListGroup.Item>Raza: {raza}</ListGroup.Item>
                     <ListGroup.Item>
-                      Edad: {moment(edad, "YYYY-MM-DD").fromNow(true)}
+                      <b>Especie:</b> {especie}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Pelaje:</b> {color}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Raza:</b> {raza}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Edad:</b> {moment(edad, "YYYY-MM-DD").fromNow(true)}
                     </ListGroup.Item>
                   </ListGroup>
                 </Card.Text>
@@ -94,7 +101,7 @@ const Pet = (props) => {
             </Card>
           </Col>
           <Col>
-            <Owner />
+            <Owner owner={owner} />
           </Col>
         </Row>
       </Jumbotron>

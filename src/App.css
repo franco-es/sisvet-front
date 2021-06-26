@@ -37,6 +37,8 @@
   }
 }
 
+
+/* PROPIOS STYLES */
 .add{
   background-color: #18c921;
   border: .3px solid #18c921
@@ -48,4 +50,8 @@
 
 .b-red{
   border: 1px solid red
+}
+
+.negrita{
+  font-weight: 500;
 }
