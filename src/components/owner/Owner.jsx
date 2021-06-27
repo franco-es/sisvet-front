@@ -7,12 +7,13 @@ import ListGroup from "react-bootstrap/ListGroup";
 
 // PROPIOS
 import AddEditOwner from "./AddEditOwner";
-import moment from "moment";
+// import moment from "moment";
 import getOwner from "../../services/owner/getOwner";
 
 const Owner = (props) => {
   const [showOwnerModal, SetShowOwnerModal] = useState(false);
   const [token] = useState(localStorage.getItem("token"));
+  const [isEdit, setIsEdit] = useState(false);
 
   const [owner, setOwner] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -42,7 +43,13 @@ const Owner = (props) => {
       }
     });
   };
+
+  const showOwnerEditModalFunction = () => {
+    setIsEdit(true);
+    SetShowOwnerModal(true);
+  };
   const showOwnerModalFunction = () => {
+    setIsEdit(false);
     SetShowOwnerModal(true);
   };
   const hideOwnerModalFunction = () => {
@@ -53,7 +60,7 @@ const Owner = (props) => {
     <>
       <Card>
         <Card.Body>
-          <Card.Title>Dueño</Card.Title>
+          <Card.Title>Propietario</Card.Title>
           <Card.Text>
             {owner === true ? (
               <ListGroup variant="flush">
@@ -83,14 +90,25 @@ const Owner = (props) => {
             Agregar
           </Button>
           {owner === true ? (
-            <Button variant="outline-primary" onClick={showOwnerModalFunction}>
+            <Button
+              variant="outline-primary"
+              onClick={showOwnerEditModalFunction}
+            >
               Editar
             </Button>
           ) : null}
         </Card.Body>
       </Card>
 
-      <AddEditOwner />
+      <AddEditOwner
+        show={showOwnerModal}
+        handleCloseAddClick={hideOwnerModalFunction}
+        isEdit={isEdit}
+        nombre={nombre}
+        apellido={apellido}
+        telefono={telefono}
+        direccion={direccion}
+      />
     </>
   );
 };
