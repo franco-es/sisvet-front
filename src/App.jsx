@@ -5,6 +5,7 @@ import Login from "./components/Users/Login";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Pets from "./components/pets/Pets";
 import Pet from "./components/pets/Pet";
+import Inicio from "./components/Inicio";
 
 function App() {
   const [authUser, setAuthUser] = React.useState(false);
@@ -12,7 +13,7 @@ function App() {
   React.useEffect(() => {
     let auth = localStorage.getItem("token");
     auth ? setAuthUser(auth) : setAuthUser(null);
-  },[]);
+  }, []);
 
   return authUser !== false ? (
     <Router>
@@ -20,7 +21,7 @@ function App() {
         <NavBar auth={authUser} />
         <Switch>
           <Route path="/" exact>
-            Ruta de Inicio
+            <Inicio />
           </Route>
           <Route path="/auth">
             <Login />
@@ -31,7 +32,6 @@ function App() {
           <Route path="/pets">
             <Pets />
           </Route>
-          Ruta de inicio
         </Switch>
       </div>
     </Router>

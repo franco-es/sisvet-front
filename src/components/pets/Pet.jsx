@@ -21,7 +21,7 @@ const Pet = (props) => {
   const [nombre, setNombre] = useState("");
   const [color, setColor] = useState("");
   const [edad, setEdad] = useState("");
-  const [owner, setOwner] = useState({});
+  const [owner] = useState({});
   const [consultas, setConsultas] = useState([]);
   const [vacunas, setVacunas] = useState([]);
   const [cirugias, setCirugias] = useState([]);

@@ -2,6 +2,7 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 const NavBar = (props) => {
   const [auth, setAuth] = React.useState(props.authUser);
@@ -24,12 +25,14 @@ const NavBar = (props) => {
   };
 
   return auth !== null ? (
-    <Container fluid>
-      <Nav className=" navbar navbar-expand-lg navbar-light bg-light ">
-        <Link to="/" className="navbar-brand ">
-          Sis Vet
-        </Link>
-        <Nav className="">
+    <Navbar bg="light" variant="light">
+      <Container>
+        <Navbar.Brand>
+          <Link to="/" className="navbar-brand ">
+            Sis Vet
+          </Link>
+        </Navbar.Brand>
+        <Nav className="justify-content-end">
           <Nav.Item className="">
             <NavLink className="btn  mr-2" to="/" exact>
               Inicio
@@ -46,24 +49,28 @@ const NavBar = (props) => {
             </button>
           </Nav.Item>
         </Nav>
-      </Nav>
-    </Container>
+      </Container>
+    </Navbar>
   ) : (
-    <div className="navbar navbar-expand-lg navbar-light bg-light ">
-      <Link to="/" className="navbar-brand">
-        React Admin
-      </Link>
-      <div className="">
-        <div className="d-flex">
-          <NavLink className="btn  mr-2" to="/" exact>
-            Inicio
-          </NavLink>
-          <NavLink className="btn " to="/auth">
-            <i className="far fa-user"></i>
-          </NavLink>
+    <Navbar bg="light" variant="light">
+      <Container>
+        <Navbar.Brand>
+          <Link to="/" className="navbar-brand ">
+            Sis Vet
+          </Link>
+        </Navbar.Brand>
+        <div className="">
+          <div className="d-flex">
+            <NavLink className="btn  mr-2" to="/" exact>
+              Inicio
+            </NavLink>
+            <NavLink className="btn justify-content-end" to="/auth">
+              <i className="far fa-user"></i>
+            </NavLink>
+          </div>
         </div>
-      </div>
-    </div>
+      </Container>
+    </Navbar>
   );
 };
 

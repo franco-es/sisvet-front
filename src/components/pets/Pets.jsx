@@ -8,9 +8,7 @@ import createPet from "../../services/pets/createPet";
 
 const Pets = (props) => {
   const [Mascotas, setMascotas] = React.useState([]);
-  const [authToken, setAuthToken] = React.useState(
-    localStorage.getItem("token")
-  );
+  const [authToken] = React.useState(localStorage.getItem("token"));
   const [petNombre, setPetNombre] = React.useState("");
   const [petEspecie, setPetEspecie] = React.useState("");
   const [petRaza, setPetRaza] = React.useState("");
