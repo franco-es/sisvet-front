@@ -2,8 +2,10 @@ import React from "react";
 
 const Inicio = () => {
   return (
-    <div>
-      <h1>Ruta de Inicio en Componente</h1>
+    <div className="bgPet">
+      <div className="mt-5 center">
+        <h1 className="justify-contet-center">Bienvenido</h1>
+      </div>
     </div>
   );
 };

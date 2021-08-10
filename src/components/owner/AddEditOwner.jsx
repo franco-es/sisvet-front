@@ -5,6 +5,9 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
+// PROPIOS
+import addEditOwnerAPI from "../../services/owner/addOwner";
+
 const AddEditOwner = (props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -47,6 +50,7 @@ const AddEditOwner = (props) => {
       return;
     }
     setError(null);
+    props.handleAddClick(nombre, apellido, telefono, direccion);
   };
 
   return (

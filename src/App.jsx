@@ -1,8 +1,10 @@
 import "./App.css";
 import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+
 import NavBar from "./components/NavBar";
 import Login from "./components/Users/Login";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Pets from "./components/pets/Pets";
 import Pet from "./components/pets/Pet";
 import Inicio from "./components/Inicio";

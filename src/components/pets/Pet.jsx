@@ -14,6 +14,7 @@ import ListVacunas from "./Vacunas/ListVacunas";
 import ListCirugias from "./Cirugias/ListCirugias";
 import Owner from "../owner/Owner";
 import EditPet from "./EditPet";
+import updatePet from "../../services/pets/editPet";
 import moment from "moment";
 
 const Pet = (props) => {
@@ -61,11 +62,18 @@ const Pet = (props) => {
   };
 
   async function handleEditPet(nombre, raza, color, especie) {
-    console.log(nombre);
-    console.log(raza);
-    console.log(color);
-    console.log(especie);
-    console.log("editar");
+    await updatePet(token, nombre, especie, raza, color, edad, id).then(
+      (result) => {
+        const data = result.data.pet;
+        setNombre(data.nombre);
+        setColor(data.color);
+        setEspecie(data.especie);
+        setRaza(data.raza);
+        setEdad(data.f_nacimiento);
+        console.log(data);
+        hideEditModalFunction();
+      }
+    );
   }
   return (
     <>
@@ -122,6 +130,7 @@ const Pet = (props) => {
         handleEditPet={handleEditPet}
         nombre={nombre}
         especie={especie}
+        f_nacimiento={edad}
         color={color}
         raza={raza}
       />

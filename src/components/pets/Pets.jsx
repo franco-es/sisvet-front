@@ -106,44 +106,38 @@ const Pets = (props) => {
           </table>
         </div>
         <div className="col-md-4">
-          <h3 className="d-flex justify-content-center">
-            {!modoEdicion ? "Agregar Mascota" : "Editar Mascota"}
-          </h3>
+          <h3 className="d-flex justify-content-center">Agregar Mascota</h3>
           <form onSubmit={(e) => addPet(e)}>
             <input
               type="text"
               placeholder="Nombre"
               className="form-control mb-2"
               onChange={(e) => setPetNombre(e.target.value)}
-              value={petNombre}
             />
             <input
               type="text"
               placeholder="Especie"
               className="form-control mb-2"
               onChange={(e) => setPetEspecie(e.target.value)}
-              value={petEspecie}
+
             />
             <input
               type="text"
               placeholder="Raza"
               className="form-control mb-2"
               onChange={(e) => setPetRaza(e.target.value)}
-              value={petRaza}
             />
             <input
               type="text"
               placeholder="Color"
               className="form-control mb-2"
               onChange={(e) => setPetColor(e.target.value)}
-              value={petColor}
             />
             <input
               type="date"
               placeholder="Fecha de Nacimiento"
               className="form-control mb-2"
               onChange={(e) => setPetF_Nacimiento(e.target.value)}
-              value={petF_Nacimiento}
             />
             <button className="btn btn-primary btn-block" type="submit">
               {modoEdicion ? "Editar" : "Agregar"}

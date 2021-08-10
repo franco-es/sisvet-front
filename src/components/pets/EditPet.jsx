@@ -10,6 +10,8 @@ const EditPet = (props) => {
   const [raza, setRaza] = useState("");
   const [color, setColor] = useState("");
   const [especie, setEspecie] = useState("");
+  const [f_nacimiento, setF_Nacimiento] = useState("");
+
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -17,6 +19,7 @@ const EditPet = (props) => {
     setRaza(props.raza);
     setColor(props.color);
     setEspecie(props.especie);
+    setF_Nacimiento(props.f_nacimiento);
   }, [setEspecie, setNombre, setColor, setRaza, props]);
 
   const verifyData = (e) => {
@@ -100,6 +103,16 @@ const EditPet = (props) => {
                 className="mx-2"
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Pelaje:</Form.Label>
+              <Form.Control
+                type="date"
+                placeholder="Fecha de Nacimiento"
+                className="mx-2"
+                value={f_nacimiento}
+                onChange={(e) => setF_Nacimiento(e.target.value)}
               />
             </Form.Group>
           </Modal.Body>

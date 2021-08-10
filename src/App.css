@@ -55,3 +55,33 @@
 .negrita{
   font-weight: 500;
 }
+
+.glassmorphism{
+  background: rgba(255, 255, 255, 0.40);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.bgPet{
+  padding:0px;
+  height:100%;
+  width: 100%;
+  position:absolute;
+  /* background-image: url(./assets/img/torre_Logo.png); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(./assets/img/dog_half_face.png);
+  background-size: contain;
+}
+.center{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg_transparent{
+  background-color: transparent;
+}

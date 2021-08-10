@@ -55,12 +55,12 @@ const Login = (props) => {
     <div className="mt-5 container">
       <h3>{esRegistro ? "Registro de usuarios" : "Login de usuarios"}</h3>
       <hr />
-      <div className="row justify-content-center">
+      <div className="bg_transparent row justify-content-center">
         <div className="col-12 col-sm-8 col-md-6 col-xl-4">
           {esRegistro ? (
             <Registro />
           ) : (
-            <form onSubmit={verifyData} className="mb-3">
+            <form onSubmit={verifyData} className="mb-3 glassmorphism">
               {error && <div className="alert alert-danger">{error}</div>}
               <input
                 type="email"

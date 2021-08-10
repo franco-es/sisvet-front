@@ -7,6 +7,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 
 // PROPIOS
 import AddEditOwner from "./AddEditOwner";
+import addEditOwnerAPI from "../../services/owner/addOwner";
 // import moment from "moment";
 import getOwner from "../../services/owner/getOwner";
 
@@ -56,6 +57,24 @@ const Owner = (props) => {
     SetShowOwnerModal(false);
   };
 
+  async function addEditOwner(nombre, apellido, telefono, direccion) {
+    await addEditOwnerAPI(
+      token,
+      id,
+      nombre,
+      apellido,
+      telefono,
+      direccion
+    ).then((res) => {
+      var data = res.data.owner;
+      setOwner(true);
+      setNombre(data.owner.nombre);
+      setApellido(data.owner.apellido);
+      setTelefono(data.owner.telefono);
+      setDireccion(data.owner.direccion);
+    });
+  }
+
   return (
     <>
       <Card>
@@ -82,13 +101,6 @@ const Owner = (props) => {
             )}
           </Card.Text>
 
-          <Button
-            variant="outline-primary"
-            className="mr-2"
-            onClick={showOwnerModalFunction}
-          >
-            Agregar
-          </Button>
           {owner === true ? (
             <Button
               variant="outline-primary"
@@ -96,18 +108,28 @@ const Owner = (props) => {
             >
               Editar
             </Button>
-          ) : null}
+          ) : (
+            <Button
+              variant="outline-primary"
+              className="mr-2"
+              onClick={showOwnerModalFunction}
+            >
+              Agregar
+            </Button>
+          )}
         </Card.Body>
       </Card>
 
       <AddEditOwner
         show={showOwnerModal}
         handleCloseAddClick={hideOwnerModalFunction}
+        handleAddClick={addEditOwner}
         isEdit={isEdit}
         nombre={nombre}
         apellido={apellido}
         telefono={telefono}
         direccion={direccion}
+        idPet={id}
       />
     </>
   );

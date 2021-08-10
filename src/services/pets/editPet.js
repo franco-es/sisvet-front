@@ -19,7 +19,7 @@ export default function updatePet(
       color,
       f_nacimiento,
     };
-    console.log(pet);
+    // console.log(pet);
     axios
       .put(`${baseUrl}/pet/update?idPet=${idPet}`, pet, {
         headers: {
