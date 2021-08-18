@@ -18,7 +18,8 @@ const ListConsultas = (props) => {
 
   useEffect(() => setConsultas(props.consultas), [props]);
 
-  const handleAddClick = () => {
+  const
+    handleAddClick = () => {
     setShowLoginModal(true);
   };
 
@@ -50,6 +51,10 @@ const ListConsultas = (props) => {
     });
   };
 
+  async function handleEdditConsulta(date, consulta, tratamiento, diagnostico) {
+
+  }
+
   return (
     <>
       <div>
@@ -62,7 +67,7 @@ const ListConsultas = (props) => {
           </Col>
         </Row>
         {consultas.length > 0 ? (
-          <Table striped bordered hover size="sm" className="mt-2">
+          <Table striped hover size="lg" className="mt-2">
             <thead>
               <tr>
                 <th></th>
@@ -78,7 +83,10 @@ const ListConsultas = (props) => {
                   <td></td>
                   <td>{moment(item.fecha).format("L")}</td>
                   <td>{item.diagnostico}</td>
-                  <td>
+                  <td
+                    className="text-content-center"
+                    onClick={(e) => handleEdditConsulta(item._id)}
+                  >
                     <i className="far fa-edit"></i>
                   </td>
                   <td

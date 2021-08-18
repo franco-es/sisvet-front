@@ -7,7 +7,8 @@ export default function addEditOwnerAPI(
   nombre,
   apellido,
   telefono,
-  direccion
+  direccion,
+  type
 ) {
   return new Promise((resolve, reject) => {
     const data = {
@@ -16,16 +17,28 @@ export default function addEditOwnerAPI(
       telefono: telefono,
       direccion: direccion,
     };
-
-    axios
-      .post(`${baseUrl}/owner/new?idPet=${idPet}`, data, {
-        headers: { authorization: token },
-      })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((err) => {
-        reject(err);
-      });
+    if (type === "update") {
+      axios
+        .put(`${baseUrl}/owner/${type}?idPet=${idPet}`, data, {
+          headers: { authorization: token },
+        })
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } else {
+      axios
+        .post(`${baseUrl}/owner/new?idPet=${idPet}`, data, {
+          headers: { authorization: token },
+        })
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    }
   });
 }

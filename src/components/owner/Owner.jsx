@@ -57,14 +57,16 @@ const Owner = (props) => {
     SetShowOwnerModal(false);
   };
 
-  async function addEditOwner(nombre, apellido, telefono, direccion) {
+  async function addOwner(nombre, apellido, telefono, direccion, type) {
+    console.log("entro por addOwner");
     await addEditOwnerAPI(
       token,
       id,
       nombre,
       apellido,
       telefono,
-      direccion
+      direccion,
+      type
     ).then((res) => {
       var data = res.data.owner;
       setOwner(true);
@@ -72,9 +74,30 @@ const Owner = (props) => {
       setApellido(data.owner.apellido);
       setTelefono(data.owner.telefono);
       setDireccion(data.owner.direccion);
+      SetShowOwnerModal(false);
     });
   }
 
+  async function editOwner(nombre, apellido, telefono, direccion, type) {
+    console.log("entro por editOwner");
+    console.log(type);
+    await addEditOwnerAPI(
+      token,
+      id,
+      nombre,
+      apellido,
+      telefono,
+      direccion,
+      type
+    ).then((res) => {
+      var data = res.data.owner;
+      setNombre(data.owner.nombre);
+      setApellido(data.owner.apellido);
+      setTelefono(data.owner.telefono);
+      setDireccion(data.owner.direccion);
+      SetShowOwnerModal(false);
+    });
+  }
   return (
     <>
       <Card>
@@ -123,7 +146,8 @@ const Owner = (props) => {
       <AddEditOwner
         show={showOwnerModal}
         handleCloseAddClick={hideOwnerModalFunction}
-        handleAddClick={addEditOwner}
+        handleAddClick={addOwner}
+        handleEditClick={editOwner}
         isEdit={isEdit}
         nombre={nombre}
         apellido={apellido}

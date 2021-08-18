@@ -10,6 +10,7 @@ import addEditOwnerAPI from "../../services/owner/addOwner";
 
 const AddEditOwner = (props) => {
   const [isEdit, setIsEdit] = useState(false);
+  const [type, setType] = useState("");
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [direccion, setDireccion] = useState("");
@@ -50,7 +51,13 @@ const AddEditOwner = (props) => {
       return;
     }
     setError(null);
-    props.handleAddClick(nombre, apellido, telefono, direccion);
+    if (props.isEdit !== true || props.isEdit == null) {
+      setType("new");
+      props.handleAddClick(nombre, apellido, telefono, direccion, type);
+    } else {
+      setType("update");
+      props.handleEditClick(nombre, apellido, telefono, direccion, type);
+    }
   };
 
   return (
