@@ -16,7 +16,10 @@ const ListConsultas = (props) => {
   const [consultas, setConsultas] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  useEffect(() => setConsultas(props.consultas), [props]);
+  useEffect(() => {
+    console.log(props);
+    //setConsultas(props.consultas), [props]
+  });
 
   const
     handleAddClick = () => {

@@ -1,8 +1,8 @@
 import "./App.css";
-import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react"; // Importamos useState y useEffect
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"; // Importamos Navigate
 
-
+// Componentes
 import NavBar from "./components/NavBar";
 import Login from "./components/Users/Login";
 import Pets from "./components/pets/Pets";
@@ -10,35 +10,57 @@ import Pet from "./components/pets/Pet";
 import Inicio from "./components/Inicio";
 
 function App() {
-  const [authUser, setAuthUser] = React.useState(false);
+  // Cambiamos el estado inicial a null (sin token) o undefined (aún cargando)
+  const [authUser, setAuthUser] = useState(undefined);
 
-  React.useEffect(() => {
-    let auth = localStorage.getItem("token");
-    auth ? setAuthUser(auth) : setAuthUser(null);
+  useEffect(() => {
+    // Verificar el token solo una vez al cargar la aplicación
+    const token = localStorage.getItem("token");
+    setAuthUser(token ? true : false); // Seteamos a 'true' si hay token, 'false' si no hay.
   }, []);
 
-  return authUser !== false ? (
+  // 1. Mostrar "Cargando..." mientras se verifica el token
+  if (authUser === undefined) {
+    return <p className="text-center mt-5">Cargando...</p>;
+  }
+
+  // 2. Si ya terminó de cargar, renderizamos las rutas
+  return (
     <Router>
-      <div className="">
-        <NavBar auth={authUser} />
-        <Switch>
-          <Route path="/" exact>
-            <Inicio />
-          </Route>
-          <Route path="/auth">
-            <Login />
-          </Route>
-          <Route path="/pets/:id" exact>
-            <Pet />
-          </Route>
-          <Route path="/pets">
-            <Pets />
-          </Route>
-        </Switch>
+      <div className="main-container"> {/* Clase más semántica */}
+        {/* Pasamos 'authUser' como un booleano para indicar si está autenticado */}
+        <NavBar auth={authUser} /> 
+        
+        <Routes>
+          {/* ✅ CORRECCIÓN PRINCIPAL: 
+            En v6, usamos la prop 'element' para renderizar el componente.
+            La prop 'exact' ya no es necesaria, se comporta como 'exact' por defecto.
+          */}
+          
+          {/* Ruta de Inicio (pública) */}
+          <Route path="/" element={<Inicio />} />
+          
+          {/* Ruta de Login/Auth: Redirigir si ya está autenticado */}
+          <Route 
+            path="/auth" 
+            element={authUser ? <Navigate to="/pets" replace /> : <Login />} 
+          />
+          
+          {/* Rutas Protegidas: Requieren autenticación (authUser === true) */}
+          <Route 
+            path="/pets" 
+            element={authUser ? <Pets /> : <Navigate to="/auth" replace />} 
+          />
+          <Route 
+            path="/pets/:id" 
+            element={authUser ? <Pet /> : <Navigate to="/auth" replace />} 
+          />
+
+          {/* Ruta de 404/Not Found (opcional) */}
+          <Route path="*" element={<p className="text-center mt-5">404 - Página no encontrada</p>} />
+        </Routes>
       </div>
     </Router>
-  ) : (
-    <p>Cargando...</p>
   );
 }
 

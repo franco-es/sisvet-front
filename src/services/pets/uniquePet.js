@@ -1,17 +1,6 @@
-import axios from "axios";
-const baseUrl = "https://sis-vet.herokuapp.com/api";
+import { http } from "../../api/http";
 
-export default function UniquePet(token, idPet) {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`${baseUrl}/pet/single?idPet=${idPet}`, {
-        headers: { authorization: token },
-      })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+export async function UniquePet(token, idPet) {
+  const res = await http.get("/species/{idPet}");
+  return res.data;
 }

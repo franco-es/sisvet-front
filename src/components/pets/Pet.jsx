@@ -1,18 +1,13 @@
 // LIBRERIAS REQUERIDAS
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Card from "react-bootstrap/card";
-import Jumbotron from "react-bootstrap/jumbotron";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import ListGroup from "react-bootstrap/ListGroup";
-import Button from "react-bootstrap/Button";
+import { Container, Card, Button, Row, Col, ListGroup } from "react-bootstrap";
 // IMPORTACIONES PROPIAS
-import UniquePet from "../../services/pets/uniquePet";
+import { UniquePet } from "../../services/pets/uniquePet";
 import ListConsultas from "./Consultas/ListConsultas";
 import ListVacunas from "./Vacunas/ListVacunas";
 import ListCirugias from "./Cirugias/ListCirugias";
-import Owner from "../owner/Owner";
+// import Owner from "../owner/Owner";
 import EditPet from "./EditPet";
 import updatePet from "../../services/pets/editPet";
 import moment from "moment";
@@ -22,7 +17,7 @@ const Pet = (props) => {
   const [nombre, setNombre] = useState("");
   const [color, setColor] = useState("");
   const [edad, setEdad] = useState("");
-  const [owner] = useState({});
+  //const [owner] = useState({});
   const [consultas, setConsultas] = useState([]);
   const [vacunas, setVacunas] = useState([]);
   const [cirugias, setCirugias] = useState([]);
@@ -40,8 +35,10 @@ const Pet = (props) => {
   }, [props.history, token]);
 
   const Uniquepet = async () => {
-    await UniquePet(token, id).then((res) => {
-      const data = res.data.pet;
+    console.log("Fetching unique pet with ID:", id);
+    const pet = await UniquePet(token, id);
+    console.log("UniquePet response:", pet);
+    const data = pet;
       setNombre(data.nombre);
       setColor(data.color);
       setEspecie(data.especie);
@@ -50,7 +47,6 @@ const Pet = (props) => {
       setConsultas(data.consultas);
       setVacunas(data.vacunas);
       setCirugias(data.cirugia);
-    });
   };
 
   const showEditModalFunction = () => {
@@ -76,53 +72,55 @@ const Pet = (props) => {
     );
   }
   return (
-    <>
-      <Jumbotron>
-        <Row>
-          <Col xs={12} md={6}>
-            <Card>
-              <Card.Body>
-                <Card.Title className="text-center">{nombre}</Card.Title>
-                <Card.Text>
-                  <ListGroup variant="flush">
-                    <ListGroup.Item>
-                      <b>Especie:</b> {especie}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <b>Pelaje:</b> {color}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <b>Raza:</b> {raza}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <b>Edad:</b> {moment(edad, "YYYY-MM-DD").fromNow(true)}
-                    </ListGroup.Item>
-                  </ListGroup>
-                </Card.Text>
-                <Button
-                  variant="outline-primary"
-                  onClick={showEditModalFunction}
-                >
-                  Editar
-                </Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col>
-            <Owner owner={owner} />
-          </Col>
-        </Row>
-      </Jumbotron>
+    <Container className="mt-5">
+      <div className="p-5 mb-4 bg-light rounded-3">
+        <h1>Pets</h1>
+        <p>Manage your pets here</p>
+      </div>
+      <Row>
+        <Col xs={12} md={6}>
+          <Card>
+            <Card.Body>
+              <Card.Title className="text-center">{nombre}</Card.Title>
+              <Card.Text>
+                <ListGroup variant="flush">
+                  <ListGroup.Item>
+                    <b>Especie:</b> {especie}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <b>Pelaje:</b> {color}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <b>Raza:</b> {raza}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <b>Edad:</b> {moment(edad, "YYYY-MM-DD").fromNow(true)}
+                  </ListGroup.Item>
+                </ListGroup>
+              </Card.Text>
+              <Button
+                variant="outline-primary"
+                onClick={showEditModalFunction}
+              >
+                Editar
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+        {/* <Col>
+          <Owner owner={owner} />
+        </Col> */}
+      </Row>
       <Row className="mt-3">
-        <Col className="justify-content center" xs={12} md={4}>
+         <Col className="justify-content center" xs={12} md={4}>
           <ListConsultas idPet={id} consultas={consultas} token={token} />
         </Col>
-        <Col className="justify-content center" xs={12} md={4}>
+       {/* <Col className="justify-content center" xs={12} md={4}>
           <ListVacunas idPet={id} vacunas={vacunas} token={token} />
         </Col>
         <Col className="justify-content center" xs={12} md={4}>
           <ListCirugias idPet={id} cirugias={cirugias} token={token} />
-        </Col>
+        </Col> */}
       </Row>
       <EditPet
         show={showEditModal}
@@ -134,7 +132,7 @@ const Pet = (props) => {
         color={color}
         raza={raza}
       />
-    </>
+    </Container>
   );
 };
 

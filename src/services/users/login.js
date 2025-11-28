@@ -1,20 +1,20 @@
-import axios from "axios";
-const baseUrl = "https://sis-vet.herokuapp.com/";
+// src/api/auth.js
+import { http } from "../../api/http";
 
-export default function login(email, password) {
-  return new Promise((resolve, reject) => {
-    const user = {
-      email: email,
-      password: password,
-      getToken: true,
-    };
-    axios
-      .post(`${baseUrl}api/user/login`, user)
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+export async function login(email, password) {
+  const body = { email, password };
+  const res = await http.post("/auth/login", body);
+  // asumiendo que el back responde { token: "..." }
+  if (res.data && res.data.token) {
+    localStorage.setItem("token", res.data.token);
+  }
+  return res.data; // devuelve { token, ... } o lo que envíe tu back
+}
+
+export function logout() {
+  localStorage.removeItem("token");
+}
+
+export function getToken() {
+  return localStorage.getItem("token");
 }

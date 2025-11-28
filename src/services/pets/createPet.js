@@ -1,33 +1,22 @@
-import axios from "axios";
-const baseUrl = "https://sis-vet.herokuapp.com/api";
-// const token = localStorage.getItem("token");
+import { http } from "../../api/http";
 
-export default function createPet(
+export async function createPet(
   token,
-  nombre,
-  especie,
-  raza,
+  name,
+  speciesName,
+  breed,
   color,
-  f_nacimiento
+  birthDate
 ) {
-  return new Promise((resolve, reject) => {
-    const pet = {
-      nombre,
-      especie,
-      raza,
-      color,
-      f_nacimiento,
-    };
-    console.log(pet);
-    axios
-      .post(`${baseUrl}/pet/new`, pet, {
-        headers: {
-          authorization: token,
-        },
-      })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((err) => reject(err));
-  });
+
+  const body = {
+    name,
+    speciesName,
+    breed,
+    color,
+    birthDate
+  }
+
+  const res = await http.post("/pets", body)
+  return res;
 }

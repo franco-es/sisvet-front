@@ -1,15 +1,19 @@
 // FUNCIONES DE REACT
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+// replace withRouter import with useNavigate
+import { useNavigate } from "react-router-dom";
 // FUNCIONES PROPIAS
-import register from "../../services/users/register";
+import {register} from "../../services/users/register";
 
-const Registro = () => {
+const Registro = (props) => {
   const [email, setEmail] = useState("");
   const [pass, setPassword] = useState("");
   const [name, SetName] = useState("");
   const [telefono, SetTelefono] = useState("");
   const [error, setError] = useState("");
+
+  // add navigate hook
+  const navigate = useNavigate();
 
   const cleanForm = () => {
     setEmail("");
@@ -35,11 +39,6 @@ const Registro = () => {
       setError("password menor de 6 caracteres.");
       return;
     }
-    if (!telefono.trim()) {
-      // console.log("password menor de 6 caracteres.");
-      setError("El Numero de telefono es OBLIGATORIO.");
-      return;
-    }
     if (!name.trim()) {
       // console.log("password menor de 6 caracteres.");
       setError("El nombre es OBLIGATORIO.");
@@ -53,7 +52,11 @@ const Registro = () => {
     const res = await register(email, pass, name, telefono);
     console.log(res);
     cleanForm();
-  }, [email, pass, name, telefono]);
+    // Example: replace any usage like:
+    // props.history.push("/auth");
+    // with:
+    navigate("/pets");
+  }, [email, pass, name]);
 
   return (
     <div>
@@ -72,12 +75,6 @@ const Registro = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <input
-          type="number"
-          className="form-control mb-2"
-          placeholder="Ingrese un telefono"
-          onChange={(e) => SetTelefono(e.target.value)}
-        />
-        <input
           type="text"
           className="form-control mb-2"
           placeholder="Ingrese su Nombre y Apellido"
@@ -91,4 +88,5 @@ const Registro = () => {
   );
 };
 
-export default withRouter(Registro);
+// export directly (no withRouter)
+export default Registro;

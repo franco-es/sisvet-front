@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "https://sis-vet.herokuapp.com/api";
+const baseUrl = "http://localhost:8550/api";
 
 export default function deletePet(token, idPet) {
   return new Promise((resolve, reject) => {
