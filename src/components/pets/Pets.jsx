@@ -91,7 +91,7 @@ const Pets = () => {
         petColor,
         petF_Nacimiento
       );
-      
+      console.log(res)
       // Aseguramos que 'res.data.mascota' exista y sea un objeto
       if (res.data && res.data.mascota) {
         setMascotas([...Mascotas, { ...res.data.mascota }]);
