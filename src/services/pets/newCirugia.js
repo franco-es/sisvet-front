@@ -1,22 +1,10 @@
-import axios from "axios";
-const baseUrl = "http://localhost:8550/api";
+import { http } from "../../api/http";
 
-export default function newConsult(token, date, contenido, idPet) {
-  return new Promise((resolve, reject) => {
-    const pet = {
-      fecha: date,
-      contenido: contenido,
-    };
-    console.log(pet);
-    axios
-      .post(`${baseUrl}/cirugia/new?idPet=${idPet}`, pet, {
-        headers: {
-          authorization: token,
-        },
-      })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((err) => reject(err));
-  });
+export default async function newCirugia(token, date, contenido, idPet) {
+  const body = {
+    fecha: date,
+    contenido,
+  };
+  const res = await http.post(`/cirugia/new?idPet=${idPet}`, body);
+  return res;
 }

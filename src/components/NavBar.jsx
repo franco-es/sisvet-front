@@ -5,27 +5,30 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 
 // Recibe 'auth' (booleano) y 'onLogout' (función) desde App.jsx
-const NavBar = ({ auth, onLogout }) => { 
-  const navigate = useNavigate();
+const NavBar = ({ auth, onLogout }) => {
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // 1. Llama a la función de App para limpiar localStorage y actualizar el estado
-    if (onLogout) {
-        onLogout();
-    }
-    // 2. Redirige, ya que App.jsx ya actualizó el estado a 'false'
-    navigate("/auth"); 
-  };
-  
-  // Usamos la prop 'auth' que ya es un booleano (true/false)
-  const isAuthenticated = auth; 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    onLogout?.();
+    navigate("/");
+  };
 
-  return (
-    <Navbar bg="light" expand="lg">
-      <Container>
-        <Navbar.Brand as={Link} to="/">
-          Sisvet
-        </Navbar.Brand>
+  const isAuthenticated = !!auth;
+
+return (
+    <Navbar className="navbar-sisvet" expand="lg">
+      <Container>
+<Navbar.Brand as={Link} to="/" className="d-flex align-items-center navbar-brand-sisvet">
+          <img
+            src="/logo.png"
+            alt="Logo Sisvet"
+            className="navbar-logo-sisvet me-2"
+            style={{ objectFit: "contain" }}
+          />
+          Sisvet
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           {/* Nav de la izquierda: Aquí van Home y los enlaces protegidos.

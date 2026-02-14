@@ -42,7 +42,7 @@ const AddVacuna = (props) => {
             <Button variant="secondary" onClick={props.handleCloseAddClick}>
               Close
             </Button>
-            <Button variant="primary" onClick={addVacuna}>
+            <Button className="btn-sisvet-primary" onClick={addVacuna}>
               Save Changes
             </Button>
           </Modal.Footer>

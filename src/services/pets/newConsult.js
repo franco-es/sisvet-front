@@ -1,8 +1,6 @@
-import axios from "axios";
-const baseUrl = "http://localhost:8550/api";
-// const token = localStorage.getItem("token");
+import { http } from "../../api/http";
 
-export default function newConsult(
+export default async function newConsult(
   token,
   date,
   consulta,
@@ -10,22 +8,12 @@ export default function newConsult(
   diagnostico,
   idPet
 ) {
-  return new Promise((resolve, reject) => {
-    const pet = {
-      fecha: date,
-      contenido: consulta,
-      tratamiento,
-      diagnostico,
-    };
-    axios
-      .post(`${baseUrl}/consulta/new?idPet=${idPet}`, pet, {
-        headers: {
-          authorization: token,
-        },
-      })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((err) => reject(err));
-  });
+  const body = {
+    fecha: date,
+    contenido: consulta,
+    tratamiento,
+    diagnostico,
+  };
+  const res = await http.post(`/consulta/new?idPet=${idPet}`, body);
+  return res;
 }

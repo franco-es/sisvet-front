@@ -1,3 +1,216 @@
+/* ========== PALETA SISVET ========== */
+:root {
+  --sisvet-cobalto: #2C3E50;
+  --sisvet-cobalto-hover: #1a252f;
+  --sisvet-menta: #2ECC71;
+  --sisvet-menta-hover: #27ae60;
+  --sisvet-platino: #ECF0F1;
+  --sisvet-platino-dark: #d5dbdc;
+}
+
+body {
+  background-color: var(--sisvet-platino);
+  min-height: 100vh;
+}
+
+/* ---------- Navbar Sisvet (Azul Cobalto) ---------- */
+.navbar-sisvet {
+  background-color: var(--sisvet-cobalto) !important;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.15);
+}
+
+.navbar-sisvet .navbar-brand,
+.navbar-sisvet .nav-link {
+  color: var(--sisvet-platino) !important;
+  font-weight: 500;
+}
+
+.navbar-sisvet .nav-link:hover,
+.navbar-sisvet .nav-link:focus {
+  color: #fff !important;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.navbar-sisvet .navbar-toggler {
+  border-color: var(--sisvet-platino);
+  color: var(--sisvet-platino);
+}
+
+.navbar-sisvet .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+.navbar-sisvet .nav-link.active {
+  color: var(--sisvet-menta) !important;
+  font-weight: 600;
+}
+
+.navbar-sisvet .navbar-brand-sisvet {
+  line-height: 1;
+}
+
+.navbar-sisvet .navbar-logo-sisvet {
+  height: 2.85em;
+  max-height: 100px;
+  width: auto;
+  vertical-align: middle;
+  padding-right: 1.5em;
+}
+
+/* ---------- Botones primarios (Verde Menta) ---------- */
+.btn-sisvet-primary {
+  background-color: var(--sisvet-menta);
+  border-color: var(--sisvet-menta);
+  color: #fff;
+  font-weight: 500;
+}
+
+.btn-sisvet-primary:hover {
+  background-color: var(--sisvet-menta-hover);
+  border-color: var(--sisvet-menta-hover);
+  color: #fff;
+}
+
+/* ---------- Botones secundarios (Azul Cobalto) ---------- */
+.btn-sisvet-cobalto {
+  background-color: var(--sisvet-cobalto);
+  border-color: var(--sisvet-cobalto);
+  color: #fff;
+  font-weight: 500;
+}
+
+.btn-sisvet-cobalto:hover {
+  background-color: var(--sisvet-cobalto-hover);
+  border-color: var(--sisvet-cobalto-hover);
+  color: #fff;
+}
+
+.btn-sisvet-outline-cobalto {
+  background-color: transparent;
+  border: 2px solid var(--sisvet-cobalto);
+  color: var(--sisvet-cobalto);
+  font-weight: 500;
+}
+
+.btn-sisvet-outline-cobalto:hover {
+  background-color: var(--sisvet-cobalto);
+  color: #fff;
+}
+
+/* ---------- Cards y fondos (Gris Platino) ---------- */
+.card-sisvet {
+  background-color: var(--sisvet-platino);
+  border: 1px solid var(--sisvet-platino-dark);
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
+}
+
+/* Select/Combo igual que los inputs del formulario (Pets y EditPet modal) */
+.card-sisvet .form-select,
+.modal-form-sisvet .form-select {
+  background-color: #fff !important;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  color: #212529;
+  padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+  min-height: calc(1.5em + 0.75rem + 2px);
+  width: 100%;
+}
+
+.card-sisvet .form-select:focus,
+.modal-form-sisvet .form-select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  background-color: #fff !important;
+}
+
+.card-sisvet .form-select option,
+.modal-form-sisvet .form-select option {
+  color: #212529;
+  background-color: #fff;
+}
+
+/* Modal Editar Mascota: label arriba, control abajo en columna */
+.modal-form-sisvet .form-group {
+  display: block;
+}
+
+.modal-form-sisvet .form-group .form-label {
+  display: block;
+  width: 100%;
+}
+
+.modal-form-sisvet .form-group .form-control,
+.modal-form-sisvet .form-group .form-select {
+  display: block;
+  width: 100%;
+}
+
+.modal-form-sisvet .form-control,
+.modal-form-sisvet .form-select {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  min-height: calc(1.5em + 0.75rem + 2px);
+}
+
+.modal-form-sisvet .form-label {
+  color: var(--sisvet-cobalto);
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.modal-sisvet .modal-content {
+  border: 1px solid var(--sisvet-platino-dark);
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.15);
+}
+
+.modal-sisvet .modal-body {
+  background-color: #fff;
+}
+
+.bg-sisvet-platino {
+  background-color: var(--sisvet-platino);
+}
+
+.text-sisvet-cobalto {
+  color: var(--sisvet-cobalto);
+}
+
+.text-sisvet-menta {
+  color: var(--sisvet-menta);
+}
+
+/* ---------- Tablas y secciones ---------- */
+.thead-sisvet th {
+  background-color: var(--sisvet-cobalto);
+  color: var(--sisvet-platino);
+  font-weight: 600;
+  border-color: var(--sisvet-cobalto);
+}
+
+.hero-sisvet {
+  background: linear-gradient(135deg, var(--sisvet-cobalto) 0%, #34495e 100%);
+  color: var(--sisvet-platino);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Utilidades existentes con paleta ---------- */
+.add {
+  background-color: var(--sisvet-menta);
+  border-color: var(--sisvet-menta);
+  color: #fff;
+}
+.add:hover {
+  background-color: var(--sisvet-menta-hover);
+  border-color: var(--sisvet-menta-hover);
+  color: #fff;
+}
+
 .App {
   text-align: center;
 }
@@ -14,7 +227,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--sisvet-cobalto);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -25,7 +238,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--sisvet-menta);
 }
 
 @keyframes App-logo-spin {
@@ -37,51 +250,41 @@
   }
 }
 
-
-/* PROPIOS STYLES */
-.add{
-  background-color: #18c921;
-  border: .3px solid #18c921
-}
-.add:hover{
-  background-color: #07ed13;
-  border: .3px solid #07ed13;
+.b-red {
+  border: 1px solid red;
 }
 
-.b-red{
-  border: 1px solid red
-}
-
-.negrita{
+.negrita {
   font-weight: 500;
 }
 
-.glassmorphism{
-  background: rgba(255, 255, 255, 0.40);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+.glassmorphism {
+  background: rgba(236, 240, 241, 0.85);
+  box-shadow: 0 8px 32px 0 rgba(44, 62, 80, 0.12);
   backdrop-filter: blur(2.5px);
   -webkit-backdrop-filter: blur(2.5px);
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--sisvet-platino-dark);
 }
 
-.bgPet{
-  padding:0px;
-  height:100%;
+.bgPet {
+  padding: 0;
+  height: 100%;
   width: 100%;
-  position:absolute;
-  /* background-image: url(./assets/img/torre_Logo.png); */
+  position: absolute;
   background-repeat: no-repeat;
   background-position: center;
   background-image: url(./assets/img/dog_half_face.png);
   background-size: contain;
+  background-color: var(--sisvet-platino);
 }
-.center{
+
+.center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.bg_transparent{
+.bg_transparent {
   background-color: transparent;
 }

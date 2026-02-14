@@ -1,44 +1,25 @@
-import axios from "axios";
-const baseUrl = "http://localhost:8550/api";
+import { http } from "../../api/http";
 
-export default function addEditOwnerAPI(
+export default async function addEditOwnerAPI(
   token,
   idPet,
-  nombre,
-  apellido,
-  telefono,
-  direccion,
+  firstName,
+  lastName,
+  phone,
+  address,
+  email,
   type
 ) {
-  return new Promise((resolve, reject) => {
-    const data = {
-      nombre: nombre,
-      apellido: apellido,
-      telefono: telefono,
-      direccion: direccion,
-    };
-    if (type === "update") {
-      axios
-        .put(`${baseUrl}/owner/${type}?idPet=${idPet}`, data, {
-          headers: { authorization: token },
-        })
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    } else {
-      axios
-        .post(`${baseUrl}/owner/new?idPet=${idPet}`, data, {
-          headers: { authorization: token },
-        })
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    }
-  });
+  const data = {
+    firstName,
+    lastName,
+    phone,
+    address,
+    email,
+  };
+  console.log(type);
+  if (type === "update") {
+    return http.put(`/owners/${idPet}`, data);
+  }
+  return http.post(`/owners/create/${idPet}`, data);
 }

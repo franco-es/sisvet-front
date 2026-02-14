@@ -5,9 +5,8 @@ import { FaEdit, FaTrashAlt, FaPlus, FaSpinner } from 'react-icons/fa'; // Impor
 // FUNCIONES DE Pets
 import { listPets } from "../../services/pets/listPets";
 import { createPet } from "../../services/pets/createPet";
-import { listSpecies } from "../../services/pets/listSpecies";
-// Asumiendo que tendrás un servicio para eliminar
-// import { deletePet as deletePetService } from "../../services/pets/deletePet"; 
+import updatePet from "../../services/pets/editPet";
+import { listSpecies } from "../../services/pets/listSpecies"; 
 
 const Pets = () => {
   const [Mascotas, setMascotas] = useState([]);
@@ -16,6 +15,7 @@ const Pets = () => {
   // Estados para el formulario
   const [petNombre, setPetNombre] = useState("");
   const [petEspecie, setPetEspecie] = useState("");
+  const [petEspecieId, setPetEspecieId] = useState("");
   const [petRaza, setPetRaza] = useState("");
   const [petColor, setPetColor] = useState("");
   const [petF_Nacimiento, setPetF_Nacimiento] = useState(""); 
@@ -27,8 +27,9 @@ const Pets = () => {
   const [isFormLoading, setIsFormLoading] = useState(false); // Para el formulario de agregar/editar
   const [isListLoading, setIsListLoading] = useState(true); // Para la lista inicial
   const [modoEdicion, setModoEdicion] = useState(false);
+  const [petIdEnEdicion, setPetIdEnEdicion] = useState(null);
   const [error, setError] = useState(null);
-  
+
   const navigate = useNavigate();
 
   // --- LÓGICA DE CARGA INICIAL Y AUTENTICACIÓN ---
@@ -37,24 +38,23 @@ const Pets = () => {
     // pero mantenemos esta lógica de redirección como respaldo
     if (!authToken) {
       navigate("/auth");
-      return; 
-    } 
+      return;
+    }
 
     const user = localStorage.getItem("user");
     if (user) {
         setUserAuth(JSON.parse(user));
     }
-    
+
     listAllPets();
     fetchAllSpecies();
-    
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- listAllPets y fetchAllSpecies son estables en montaje
   }, [navigate, authToken]); 
 
   const listAllPets = async () => {
     setIsListLoading(true);
     try {
       const res = await listPets(authToken);
-      // Aseguramos que 'res.data.pet' sea un array
       if (res && Array.isArray(res)) {
           setMascotas(res);
       } else {
@@ -62,94 +62,144 @@ const Pets = () => {
       }
     } catch (err) {
       console.error("Error al listar mascotas:", err);
-      // Manejo de errores de autenticación o servidor
-      // navigate("/auth"); // Podrías forzar la salida si falla por token inválido
     } finally {
         setIsListLoading(false);
     }
   };
 
-  // --- LÓGICA DE AGREGAR MASCOTA ---
+  // --- Cargar datos en el formulario para editar ---
+  const editPet = (pet) => {
+    const id = pet.id ?? pet._id;
+    setPetNombre(pet.name ?? pet.nombre ?? "");
+    const speciesId = pet.speciesId ?? pet.species_id ?? pet.species?.id ?? pet.species?._id;
+    const speciesIdFromName =
+      speciesId ||
+      (() => {
+        const name = pet.species ?? pet.especie;
+        if (!name || !speciesList.length) return "";
+        const found = speciesList.find(
+          (s) => (s.name ?? s.nombre) === name
+        );
+        return found ? found.id ?? found._id : "";
+      })();
+    setPetEspecieId(speciesIdFromName ?? "");
+    setPetRaza(pet.breed ?? pet.raza ?? "");
+    setPetColor(pet.color ?? "");
+    setPetF_Nacimiento(pet.birthDate ?? pet.f_nacimiento ?? "");
+    setPetIdEnEdicion(id);
+    setModoEdicion(true);
+    setError(null);
+  };
+
+  const cancelarEdicion = () => {
+    setModoEdicion(false);
+    setPetIdEnEdicion(null);
+    setPetNombre("");
+    setPetEspecieId("");
+    setPetRaza("");
+    setPetColor("");
+    setPetF_Nacimiento("");
+    setError(null);
+  };
+
+  // --- AGREGAR O EDITAR MASCOTA ---
   const addPet = async (e) => {
     e.preventDefault();
     setIsFormLoading(true);
     setError(null);
 
-    // Validación básica de campos obligatorios
-    if (!petNombre || !petEspecie || !petRaza) {
-        setError("Nombre, Especie y Raza son obligatorios.");
-        setIsFormLoading(false);
-        return;
+    if (!petNombre?.trim() || !petEspecieId || !petRaza?.trim()) {
+      setError("Nombre, Especie y Raza son obligatorios.");
+      setIsFormLoading(false);
+      return;
     }
 
+    const speciesName = speciesList.find(
+      (s) => String(s.id ?? s._id) === String(petEspecieId)
+    )?.name ?? speciesList.find((s) => String(s.id ?? s._id) === String(petEspecieId))?.nombre;
+
     try {
-      const res = await createPet(
-        authToken,
-        petNombre,
-        petEspecie,
-        petRaza,
-        petColor,
-        petF_Nacimiento
-      );
-      console.log(res)
-      // Aseguramos que 'res.data.mascota' exista y sea un objeto
-      if (res.data && res.data.mascota) {
-        setMascotas([...Mascotas, { ...res.data.mascota }]);
-        // Limpiar formulario
-        setPetNombre("");
-        setPetEspecie("");
-        setPetRaza("");
-        setPetColor("");
-        setPetF_Nacimiento("");
+      if (modoEdicion && petIdEnEdicion) {
+        await updatePet(
+          authToken,
+          petNombre,
+          petEspecieId,
+          petRaza,
+          petColor,
+          petF_Nacimiento,
+          petIdEnEdicion
+        );
+        setMascotas((prev) =>
+          prev.map((p) => {
+            const pid = p.id ?? p._id;
+            if (pid === petIdEnEdicion) {
+              return {
+                ...p,
+                name: petNombre,
+                nombre: petNombre,
+                speciesId: petEspecieId,
+                species: speciesName ?? p.species,
+                breed: petRaza,
+                raza: petRaza,
+                color: petColor,
+                birthDate: petF_Nacimiento,
+                f_nacimiento: petF_Nacimiento,
+              };
+            }
+            return p;
+          })
+        );
+        cancelarEdicion();
       } else {
-         setError("Error al agregar la mascota. Respuesta incompleta.");
+        const res = await createPet(
+          authToken,
+          petNombre,
+          petEspecieId,
+          petRaza,
+          petColor,
+          petF_Nacimiento
+        );
+        if (res?.data) {
+          setMascotas((prev) => [...prev, { ...res.data, id: res.data.id ?? res.data._id }]);
+          cancelarEdicion();
+        } else {
+          setError("Error al agregar la mascota. Respuesta incompleta.");
+        }
       }
-      
     } catch (err) {
-      console.error("Error al crear mascota:", err);
-      setError("Ocurrió un error al intentar agregar la mascota.");
+      console.error(modoEdicion ? "Error al actualizar mascota:" : "Error al crear mascota:", err);
+      setError(
+        modoEdicion
+          ? "Ocurrió un error al guardar los cambios."
+          : "Ocurrió un error al intentar agregar la mascota."
+      );
     } finally {
       setIsFormLoading(false);
     }
   };
 
-  // --- LÓGICA DE EDICIÓN Y ELIMINACIÓN (Simulación) ---
-  const editPet = (pet) => {
-    setModoEdicion(true);
-    // Aquí cargarías los datos de 'pet' en el formulario para edición
-    console.log("Editando mascota:", pet._id);
-  };
-  
   const deletePet = (petId) => {
-    // Aquí iría la llamada al servicio deletePetService(authToken, petId)
-    console.log("Eliminando mascota:", petId);
-    // Después de una eliminación exitosa:
-    // setMascotas(Mascotas.filter(pet => pet._id !== petId));
+    // TODO: deletePetService(authToken, petId) y actualizar lista
   };
 
   const fetchAllSpecies = async () => {
       try {
           // Asumiendo que listSpecies devuelve un array de objetos o strings de especies
           const res = await listSpecies(authToken); 
-          const fetchedSpecies = res || []; 
-          setSpeciesList(fetchedSpecies);
-          
-          fetchedSpecies.forEach(species => {
-              console.log("Especie cargada:", species);
-          })
+          const fetchedSpecies = res?.data ?? res ?? [];
+          setSpeciesList(Array.isArray(fetchedSpecies) ? fetchedSpecies : []);
 
       } catch (err) {
-          console.error("Error al listar especies:", err);
+          setSpeciesList([]);
       }
   };
 
   // --- RENDERIZADO ---
   const welcomeName = userAuth?.nombre || "Usuario"; // Uso de optional chaining
-
   return (
-    <div className="container mt-4">
+    <div className="container-fluid mt-4 px-3">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="fw-bold text-dark">
+        <h1 className="fw-bold text-sisvet-cobalto">
           Bienvenido, {welcomeName}
         </h1>
       </div>
@@ -157,13 +207,13 @@ const Pets = () => {
       <div className="row">
         {/* COLUMNA IZQUIERDA: LISTA DE MASCOTAS (8 columnas) */}
         <div className="col-md-8">
-          <div className="card shadow-sm p-3 mb-4">
-            <h3 className="mb-3 text-primary">Mascotas Registradas</h3>
-            <hr className="my-2" />
+          <div className="card card-sisvet shadow-sm p-3 mb-4">
+            <h3 className="mb-3 text-sisvet-cobalto">Mascotas Registradas</h3>
+            <hr className="my-2" style={{ borderColor: 'var(--sisvet-platino-dark)' }} />
             
             {isListLoading ? (
                 <div className="text-center py-5">
-                    <FaSpinner className="fa-spin text-primary" size={24} /> 
+                    <FaSpinner className="fa-spin text-sisvet-menta" size={24} /> 
                     <p className="mt-2">Cargando lista de mascotas...</p>
                 </div>
             ) : Mascotas.length === 0 ? (
@@ -173,7 +223,7 @@ const Pets = () => {
             ) : (
                 <div className="table-responsive">
                     <table className="table table-striped table-hover align-middle">
-                      <thead className="table-light">
+                      <thead className="thead-sisvet">
                         <tr>
                           <th scope="col">#</th>
                           <th scope="col">Nombre</th>
@@ -188,17 +238,17 @@ const Pets = () => {
                           <tr key={pet.id}>
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <Link to={`/pets/${pet.id}`} className="text-decoration-none text-dark fw-semibold">
+                              <Link to={`/pet/${pet.id}`} className="text-decoration-none text-dark fw-semibold">
                                 {pet.name}
                               </Link>
                             </td>
-                            <td>{pet.species}</td>
+                            <td>{pet.speciesName}</td>
                             <td>{pet.breed}</td>
-                            <td>{pet.owner ? pet.orner.name : "Sin propietario"}</td>
+                            <td>{pet.owner ? pet.owner.firstName + " " + pet.owner.lastName : "Sin propietario"}</td>
                             <td className="text-center">
                               {/* Botón de Editar */}
                               <button 
-                                className="btn btn-sm btn-outline-primary me-2" 
+                                className="btn btn-sm btn-sisvet-outline-cobalto me-2" 
                                 onClick={() => editPet(pet)}
                               >
                                 <FaEdit />
@@ -223,9 +273,9 @@ const Pets = () => {
         {/* COLUMNA DERECHA: FORMULARIO (4 columnas) */}
         <div className="col-md-4">
             {/* Estilo de Tarjeta para el formulario */}
-            <div className="card shadow-lg p-4">
-              <h3 className="text-center text-secondary mb-4 d-flex align-items-center justify-content-center">
-                <FaPlus className="me-2 text-primary" />
+            <div className="card card-sisvet shadow-sm p-4">
+              <h3 className="text-center text-sisvet-cobalto mb-4 d-flex align-items-center justify-content-center">
+                <FaPlus className="me-2 text-sisvet-menta" />
                 {modoEdicion ? "Editar Mascota" : "Agregar Mascota"}
               </h3>
               
@@ -250,21 +300,21 @@ const Pets = () => {
                 <div className="form-group mb-3">
                   <select
                     className="form-select"
-                    value={petEspecie}
-                    onChange={(e) => setPetEspecie(e.target.value)}
+                    value={petEspecieId}
+                    onChange={(e) => setPetEspecieId(e.target.value)}
                     required
                     disabled={isFormLoading || speciesList.length === 0}
                   >
                     <option value="" disabled>Seleccione una Especie</option>
-                    {speciesList.map((species) => (
-                        // ⚠️ Usar 'species.id' o 'species.nombre' dependiendo de tu estructura de datos
-                        <option 
-                            key={species.id} 
-                            value={species.name}
-                        >
-                            {species.name}
+                    {speciesList.map((species) => {
+                      const sid = species.id ?? species._id;
+                      const label = species.name ?? species.nombre ?? sid;
+                      return (
+                        <option key={sid} value={sid}>
+                          {label}
                         </option>
-                    ))}
+                      );
+                    })}
                     {speciesList.length === 0 && (
                         <option value="" disabled>Cargando especies...</option>
                     )}
@@ -312,7 +362,7 @@ const Pets = () => {
                 
                 {/* Botón de Submit */}
                 <button 
-                  className="btn btn-primary w-100" 
+                  className="btn btn-sisvet-primary w-100" 
                   type="submit"
                   disabled={isFormLoading}
                 >
@@ -329,9 +379,9 @@ const Pets = () => {
                 {/* Botón de Cancelar Edición */}
                 {modoEdicion && (
                     <button 
-                        className="btn btn-outline-secondary w-100 mt-2" 
+                        className="btn btn-sisvet-outline-cobalto w-100 mt-2" 
                         type="button" 
-                        onClick={() => { setModoEdicion(false); /* Limpiar campos */ }}
+                        onClick={cancelarEdicion}
                     >
                         Cancelar
                     </button>

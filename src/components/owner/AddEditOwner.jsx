@@ -6,8 +6,6 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 // PROPIOS
-import addEditOwnerAPI from "../../services/owner/addOwner";
-
 const AddEditOwner = (props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [type, setType] = useState("");
@@ -15,6 +13,7 @@ const AddEditOwner = (props) => {
   const [apellido, setApellido] = useState("");
   const [direccion, setDireccion] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -25,11 +24,13 @@ const AddEditOwner = (props) => {
       setApellido(props.apellido);
       setTelefono(props.telefono);
       setDireccion(props.direccion);
+      setEmail(props.email);
     } else {
       setNombre("");
       setApellido("");
       setTelefono("");
       setDireccion("");
+      setEmail("");
     }
   }, [props, setIsEdit, isEdit]);
 
@@ -50,26 +51,32 @@ const AddEditOwner = (props) => {
       setError("Por favor, Agregue un Telefono.");
       return;
     }
-    setError(null);
-    if (props.isEdit !== true || props.isEdit == null) {
-      setType("new");
-      props.handleAddClick(nombre, apellido, telefono, direccion, type);
-    } else {
-      setType("update");
-      props.handleEditClick(nombre, apellido, telefono, direccion, type);
+    if (!email.trim()) {
+      setError("Por favor, Agregue un Email.");
+      return;
     }
+    setError(null);
+
+    if (props.isEdit == true) {
+      setType("update");
+      props.handleEditClick(nombre, apellido, telefono, direccion, email, type);
+    } else {
+      setType("new");
+      props.handleAddClick(nombre, apellido, telefono, direccion, email, type);
+    }
+
   };
 
   return (
     <>
       <Modal show={props.show} onHide={props.handleCloseAddClick}>
-        <Modal.Header closeButton>
-          <Modal.Title>
+        <Modal.Header closeButton className="text-center bg-sisvet-platino border-0 pb-0">
+          <Modal.Title className="text-sisvet-cobalto">
             {isEdit === true ? "Editar Propietario" : "Agregar Propietario"}
           </Modal.Title>
         </Modal.Header>
         <Form>
-          <Modal.Body>
+          <Modal.Body className="modal-form-sisvet pt-3">
             {error ? <span className="text-danger">{error}</span> : null}
             <Form.Group>
               <Form.Label>Nombre: *</Form.Label>
@@ -119,12 +126,24 @@ const AddEditOwner = (props) => {
               />
             </Form.Group>
             <br />
+            <Form.Group>
+              <Form.Label>Email: *</Form.Label>
+              <Form.Control
+                id="text"
+                type="email"
+                placeholder="Email"
+                className="mx-2"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Group>
+            <br />
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={props.handleCloseAddClick}>
+          <Modal.Footer className="bg-sisvet-platino">
+            <Button className="btn-sisvet-outline-cobalto" onClick={props.handleCloseAddClick}>
               Cancelar
             </Button>
-            <Button variant="primary" onClick={verifyData}>
+            <Button className="btn-sisvet-primary" onClick={verifyData}>
               {isEdit === true ? "Editar Propietario" : "Agregar Propietario"}
             </Button>
           </Modal.Footer>

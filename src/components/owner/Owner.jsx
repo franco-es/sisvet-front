@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 // BOOTSTRAP
 import Card from "react-bootstrap/Card";
@@ -21,29 +21,30 @@ const Owner = (props) => {
   const [apellido, setApellido] = useState("");
   const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState("");
+  const [email, setEmail] = useState("");
 
   const { id } = useParams();
 
-  useEffect(() => {
-    handleGetOwner();
-  }, []);
-
-  const handleGetOwner = async () => {
+  const handleGetOwner = useCallback(async () => {
     await getOwner(token, id).then((res) => {
-      let owner = res.data.owner;
+      let owner = res;
       console.log(owner);
-
       if (owner === undefined) {
         setOwner(false);
       } else {
         setOwner(true);
-        setNombre(owner.nombre);
-        setApellido(owner.apellido);
-        setTelefono(owner.telefono);
-        setDireccion(owner.direccion);
+        setNombre(owner.firstName);
+        setApellido(owner.lastName);
+        setTelefono(owner.phone);
+        setDireccion(owner.address);
+        setEmail(owner.email);
       }
     });
-  };
+  }, [token, id]);
+
+  useEffect(() => {
+    handleGetOwner();
+  }, [handleGetOwner]);
 
   const showOwnerEditModalFunction = () => {
     setIsEdit(true);
@@ -57,8 +58,7 @@ const Owner = (props) => {
     SetShowOwnerModal(false);
   };
 
-  async function addOwner(nombre, apellido, telefono, direccion, type) {
-    console.log("entro por addOwner");
+  async function addOwner(nombre, apellido, telefono, direccion, email, type) {
     await addEditOwnerAPI(
       token,
       id,
@@ -66,21 +66,21 @@ const Owner = (props) => {
       apellido,
       telefono,
       direccion,
+      email,
       type
     ).then((res) => {
-      var data = res.data.owner;
+      var data = res;
       setOwner(true);
-      setNombre(data.owner.nombre);
-      setApellido(data.owner.apellido);
-      setTelefono(data.owner.telefono);
-      setDireccion(data.owner.direccion);
+      setNombre(data.firstName);
+      setApellido(data.lastName);
+      setTelefono(data.phone);
+      setDireccion(data.address);
+      setEmail(data.email);
       SetShowOwnerModal(false);
     });
   }
 
-  async function editOwner(nombre, apellido, telefono, direccion, type) {
-    console.log("entro por editOwner");
-    console.log(type);
+  async function editOwner(nombre, apellido, telefono, direccion, email, type) {
     await addEditOwnerAPI(
       token,
       id,
@@ -88,21 +88,23 @@ const Owner = (props) => {
       apellido,
       telefono,
       direccion,
+      email,
       type
     ).then((res) => {
-      var data = res.data.owner;
-      setNombre(data.owner.nombre);
-      setApellido(data.owner.apellido);
-      setTelefono(data.owner.telefono);
-      setDireccion(data.owner.direccion);
+      var data = res.data;
+      setNombre(data.firstName);
+      setApellido(data.lastName);
+      setTelefono(data.phone);
+      setDireccion(data.address);
+      setEmail(data.email);
       SetShowOwnerModal(false);
     });
   }
   return (
     <>
-      <Card>
+      <Card className="card-sisvet border-0">
         <Card.Body>
-          <Card.Title>Propietario</Card.Title>
+          <Card.Title className="text-sisvet-cobalto">Propietario</Card.Title>
           <Card.Text>
             {owner === true ? (
               <ListGroup variant="flush">
@@ -118,6 +120,9 @@ const Owner = (props) => {
                 <ListGroup.Item>
                   <b>Telefono:</b> {telefono}
                 </ListGroup.Item>
+                <ListGroup.Item>
+                  <b>Email:</b> {email}
+                </ListGroup.Item>
               </ListGroup>
             ) : (
               <p>Agreguemos un owner</p>
@@ -126,15 +131,14 @@ const Owner = (props) => {
 
           {owner === true ? (
             <Button
-              variant="outline-primary"
+              className="btn-sisvet-outline-cobalto"
               onClick={showOwnerEditModalFunction}
             >
               Editar
             </Button>
           ) : (
             <Button
-              variant="outline-primary"
-              className="mr-2"
+              className="btn-sisvet-primary me-2"
               onClick={showOwnerModalFunction}
             >
               Agregar
@@ -153,6 +157,7 @@ const Owner = (props) => {
         apellido={apellido}
         telefono={telefono}
         direccion={direccion}
+        email={email}
         idPet={id}
       />
     </>

@@ -7,6 +7,7 @@ import Login from "./components/Users/Login";
 import Pets from "./components/pets/Pets";
 import Pet from "./components/pets/Pet";
 import Inicio from "./components/Inicio";
+import OwnersPlaceholder from "./components/owner/OwnersPlaceholder";
 
 function App() {
   const [authUser, setAuthUser] = React.useState(false);
@@ -16,15 +17,20 @@ function App() {
     auth ? setAuthUser(auth) : setAuthUser(null);
   }, []);
 
+  const handleLogout = React.useCallback(() => {
+    setAuthUser(null);
+  }, []);
+
   return authUser !== false ? (
     <Router>
       <div className="">
-        <NavBar auth={authUser} />
+        <NavBar auth={!!authUser} onLogout={handleLogout} />
         <Routes>
           <Route path="/" element={<Inicio />} />
-          <Route path="/auth" element={<Login />} />
-          <Route path="/pets/:id" element={<Pet />} />
+          <Route path="/auth" element={<Login onAuthSuccess={setAuthUser} />} />
+          <Route path="/pet/:id" element={<Pet />} />
           <Route path="/pets" element={<Pets />} />
+          <Route path="/owners" element={<OwnersPlaceholder />} />
         </Routes>
       </div>
     </Router>

@@ -21,8 +21,7 @@ const Login = ({ onAuthSuccess }) => { // 👈 Agregamos una prop para notificar
     try {
       // ⚠️ Asumo que la función 'login' es la encargada de guardar el token en localStorage.
       // Si no lo hace, debes agregarlo aquí: localStorage.setItem("token", res.token);
-      const res = await login(email, password); 
-      console.log(res);
+      const res = await login(email, password);
 
       if (res.message && res.message !== "OK") {
         setError("Email o contraseña incorrectos.");
@@ -42,7 +41,6 @@ const Login = ({ onAuthSuccess }) => { // 👈 Agregamos una prop para notificar
         navigate("/pets"); 
       }
     } catch (err) {
-      console.error(err);
       setError("Ocurrió un error al intentar iniciar sesión.");
     } finally {
       setIsLoading(false); // Detener carga al finalizar
@@ -70,7 +68,6 @@ const Login = ({ onAuthSuccess }) => { // 👈 Agregamos una prop para notificar
       return;
     }
 
-    console.log("Pasando todas las validaciones");
     await auth();
   };
   
@@ -82,19 +79,18 @@ const Login = ({ onAuthSuccess }) => { // 👈 Agregamos una prop para notificar
 
 
   return (
-    <div className="mt-5 container">
-      {/* Título */}
-      <h3 className="text-center mb-4">
+    <div className="mt-5 container-fluid bg-sisvet-platino py-4 rounded-3 px-3">
+      <h3 className="text-center mb-4 text-sisvet-cobalto fw-bold">
         {esRegistro ? "Registro de usuarios" : "Login de usuarios"}
       </h3>
-      <hr />
+      <hr className="border-sisvet-cobalto" style={{ borderColor: 'var(--sisvet-cobalto)', opacity: 0.3 }} />
 
       <div className="row justify-content-center">
         <div className="col-12 col-sm-8 col-md-6 col-xl-4">
           {esRegistro ? (
-            <Registro />
+            <Registro onAuthSuccess={onAuthSuccess} />
           ) : (
-            <div className="card shadow-lg p-4 mb-4">
+            <div className="card card-sisvet shadow-sm p-4 mb-4">
               <form onSubmit={verifyData}>
                 {error && <div className="alert alert-danger text-center">{error}</div>}
                 
@@ -130,7 +126,7 @@ const Login = ({ onAuthSuccess }) => { // 👈 Agregamos una prop para notificar
                 {/* Botón de Login */}
                 <button 
                   type="submit" 
-                  className="btn btn-dark w-100" 
+                  className="btn btn-sisvet-primary w-100" 
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -150,7 +146,7 @@ const Login = ({ onAuthSuccess }) => { // 👈 Agregamos una prop para notificar
           <button
             type="button"
             onClick={toggleRegistro}
-            className={`btn ${esRegistro ? 'btn-outline-secondary' : 'btn-info'} w-100`}
+            className={`btn ${esRegistro ? 'btn-sisvet-outline-cobalto' : 'btn-sisvet-cobalto'} w-100`}
             disabled={isLoading}
           >
             {esRegistro ? "Volver al Login" : "Regístrate aquí"}

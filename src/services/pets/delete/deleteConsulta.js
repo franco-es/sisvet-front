@@ -1,20 +1,8 @@
-import axios from "axios";
-const baseUrl = "http://localhost:8550/api";
+import { http } from "../../../api/http";
 
-export default function deleteConsult(token, idPet, idConsulta) {
-  return new Promise((resolve, reject) => {
-    axios
-      .delete(
-        `${baseUrl}/consulta/delete?idPet=${idPet}&idConsulta=${idConsulta}`,
-        {
-          headers: {
-            authorization: token,
-          },
-        }
-      )
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((err) => reject(err));
-  });
+export default async function deleteConsult(token, idPet, idConsulta) {
+  const res = await http.delete(
+    `/consulta/delete?idPet=${idPet}&idConsulta=${idConsulta}`
+  );
+  return res;
 }

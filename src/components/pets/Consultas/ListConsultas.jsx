@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import "moment/locale/es";
-// BOOTSTRAP
-import Table from "react-bootstrap/table";
-import Row from "react-bootstrap/row";
-import Button from "react-bootstrap/button";
-import Col from "react-bootstrap/col";
+// BOOTSTRAP (PascalCase: Linux/Docker es case-sensitive)
+import Table from "react-bootstrap/Table";
+import Row from "react-bootstrap/Row";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
 // MIOS
 import AddConsulta from "./AddConsulta";
 import newConsult from "../../../services/pets/newConsult";
@@ -16,10 +16,7 @@ const ListConsultas = (props) => {
   const [consultas, setConsultas] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  useEffect(() => {
-    console.log(props);
-    //setConsultas(props.consultas), [props]
-  });
+  useEffect(() => setConsultas(props.consultas), [props]);
 
   const
     handleAddClick = () => {

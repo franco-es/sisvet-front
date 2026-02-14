@@ -1,53 +1,66 @@
 // LIBRERIAS REQUERIDAS
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Container, Card, Button, Row, Col, ListGroup } from "react-bootstrap";
 // IMPORTACIONES PROPIAS
-import { UniquePet } from "../../services/pets/uniquePet";
+import UniquePet from "../../services/pets/uniquePet";
+import { listSpecies } from "../../services/pets/listSpecies";
 import ListConsultas from "./Consultas/ListConsultas";
 import ListVacunas from "./Vacunas/ListVacunas";
 import ListCirugias from "./Cirugias/ListCirugias";
-// import Owner from "../owner/Owner";
+import Owner from "../owner/Owner";
 import EditPet from "./EditPet";
 import updatePet from "../../services/pets/editPet";
 import moment from "moment";
 
-const Pet = (props) => {
+const Pet = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [token] = useState(localStorage.getItem("token"));
   const [nombre, setNombre] = useState("");
   const [color, setColor] = useState("");
   const [edad, setEdad] = useState("");
-  //const [owner] = useState({});
+  const [owner] = useState({});
   const [consultas, setConsultas] = useState([]);
   const [vacunas, setVacunas] = useState([]);
   const [cirugias, setCirugias] = useState([]);
-  const [especie, setEspecie] = useState(localStorage.getItem("token"));
-  const [raza, setRaza] = useState(localStorage.getItem("token"));
+  const [especie, setEspecie] = useState("");
+  const [raza, setRaza] = useState("");
+  const [especieId, setEspecieId] = useState("");
+  const [speciesList, setSpeciesList] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
-  const { id } = useParams();
+
+  const Uniquepet = useCallback(async () => {
+    await UniquePet(token, id).then((res) => {
+      const data = res.data?.pet ?? res.data ?? {};
+      setNombre(data.nombre ?? data.name ?? "");
+      setColor(data.color ?? "");
+      setEspecie(data.speciesName ?? data.speciesName ?? "");
+      setRaza(data.raza ?? data.breed ?? "");
+      setEdad(data.f_nacimiento ?? data.birthDate ?? "");
+      setEspecieId(data.speciesId ?? data.species_id ?? "");
+      setConsultas(data.consultas ?? []);
+      setVacunas(data.vacunas ?? []);
+      setCirugias(data.cirugia ?? []);
+    });
+  }, [token, id]);
 
   useEffect(() => {
-    if (token === null) {
-      props.history.push("/auth");
+    if (!token) {
+      navigate("/auth");
     } else {
       Uniquepet();
     }
-  }, [props.history, token]);
+  }, [token, navigate, Uniquepet]);
 
-  const Uniquepet = async () => {
-    console.log("Fetching unique pet with ID:", id);
-    const pet = await UniquePet(token, id);
-    console.log("UniquePet response:", pet);
-    const data = pet;
-      setNombre(data.nombre);
-      setColor(data.color);
-      setEspecie(data.especie);
-      setRaza(data.raza);
-      setEdad(data.f_nacimiento);
-      setConsultas(data.consultas);
-      setVacunas(data.vacunas);
-      setCirugias(data.cirugia);
-  };
+  useEffect(() => {
+    if (!token) return;
+    listSpecies()
+      .then((list) => {
+        setSpeciesList(Array.isArray(list) ? list : []);
+      })
+      .catch(() => setSpeciesList([]));
+  }, [token]);
 
   const showEditModalFunction = () => {
     setShowEditModal(true);
@@ -57,31 +70,31 @@ const Pet = (props) => {
     setShowEditModal(false);
   };
 
-  async function handleEditPet(nombre, raza, color, especie) {
-    await updatePet(token, nombre, especie, raza, color, edad, id).then(
+  async function handleEditPet(nombre, raza, color, speciesId, f_nacimiento) {
+    await updatePet(token, nombre, speciesId, raza, color, f_nacimiento ?? edad, id).then(
       (result) => {
-        const data = result.data.pet;
-        setNombre(data.nombre);
-        setColor(data.color);
-        setEspecie(data.especie);
-        setRaza(data.raza);
-        setEdad(data.f_nacimiento);
-        console.log(data);
+        const data = result.data?.pet ?? result.data ?? {};
+        setNombre(data.nombre ?? data.name ?? nombre);
+        setColor(data.color ?? color);
+        setEspecie(data.especie ?? data.species ?? especie);
+        setRaza(data.raza ?? data.breed ?? raza);
+        setEdad(data.f_nacimiento ?? data.birthDate ?? f_nacimiento ?? edad);
+        setEspecieId(data.speciesId ?? data.species_id ?? speciesId ?? "");
         hideEditModalFunction();
       }
     );
   }
   return (
-    <Container className="mt-5">
-      <div className="p-5 mb-4 bg-light rounded-3">
-        <h1>Pets</h1>
-        <p>Manage your pets here</p>
+    <Container fluid className="mt-5 px-3">
+      <div className="hero-sisvet">
+        <h1 className="mb-1">Pets</h1>
+        <p className="mb-0 opacity-90">Gestiona tus mascotas aquí</p>
       </div>
       <Row>
         <Col xs={12} md={6}>
-          <Card>
+          <Card className="card-sisvet border-0">
             <Card.Body>
-              <Card.Title className="text-center">{nombre}</Card.Title>
+              <Card.Title className="text-center text-sisvet-cobalto">{nombre}</Card.Title>
               <Card.Text>
                 <ListGroup variant="flush">
                   <ListGroup.Item>
@@ -99,7 +112,7 @@ const Pet = (props) => {
                 </ListGroup>
               </Card.Text>
               <Button
-                variant="outline-primary"
+                className="btn-sisvet-outline-cobalto"
                 onClick={showEditModalFunction}
               >
                 Editar
@@ -107,27 +120,29 @@ const Pet = (props) => {
             </Card.Body>
           </Card>
         </Col>
-        {/* <Col>
+        <Col>
           <Owner owner={owner} />
-        </Col> */}
+        </Col>
       </Row>
       <Row className="mt-3">
-         <Col className="justify-content center" xs={12} md={4}>
+        <Col className="justify-content center" xs={12} md={4}>
           <ListConsultas idPet={id} consultas={consultas} token={token} />
         </Col>
-       {/* <Col className="justify-content center" xs={12} md={4}>
+        <Col className="justify-content center" xs={12} md={4}>
           <ListVacunas idPet={id} vacunas={vacunas} token={token} />
         </Col>
         <Col className="justify-content center" xs={12} md={4}>
           <ListCirugias idPet={id} cirugias={cirugias} token={token} />
-        </Col> */}
+        </Col>
       </Row>
       <EditPet
         show={showEditModal}
         handleCloseAddClick={hideEditModalFunction}
         handleEditPet={handleEditPet}
         nombre={nombre}
-        especie={especie}
+        especieId={especieId}
+        especieName={especie}
+        speciesList={speciesList}
         f_nacimiento={edad}
         color={color}
         raza={raza}

@@ -36,7 +36,7 @@ const AddCirugia = (props) => {
             <Button variant="secondary" onClick={props.handleCloseAddClick}>
               Close
             </Button>
-            <Button variant="primary" onClick={addConsult}>
+            <Button className="btn-sisvet-primary" onClick={addConsult}>
               Agregar Consulta
             </Button>
           </Modal.Footer>
