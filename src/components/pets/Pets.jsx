@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEdit, FaTrashAlt, FaPlus, FaSpinner } from 'react-icons/fa'; // Importamos iconos
+import { FaEdit, FaTrashAlt, FaPlus, FaSpinner, FaSearch } from 'react-icons/fa';
 
-// FUNCIONES DE Pets
-import { listPets } from "../../services/pets/listPets";
-import { createPet } from "../../services/pets/createPet";
-import updatePet from "../../services/pets/editPet";
-import { listSpecies } from "../../services/pets/listSpecies"; 
+import { listPets, createPet, updatePet, listSpecies } from "../../services/pets";
+import { getCurrentUser } from "../../utils/auth"; 
 
 const Pets = () => {
   const [Mascotas, setMascotas] = useState([]);
@@ -14,7 +11,6 @@ const Pets = () => {
   
   // Estados para el formulario
   const [petNombre, setPetNombre] = useState("");
-  const [petEspecie, setPetEspecie] = useState("");
   const [petEspecieId, setPetEspecieId] = useState("");
   const [petRaza, setPetRaza] = useState("");
   const [petColor, setPetColor] = useState("");
@@ -29,8 +25,18 @@ const Pets = () => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [petIdEnEdicion, setPetIdEnEdicion] = useState(null);
   const [error, setError] = useState(null);
+  const [busqueda, setBusqueda] = useState("");
 
   const navigate = useNavigate();
+
+  const mascotasFiltradas = Mascotas.filter((pet) => {
+    if (!busqueda.trim()) return true;
+    const term = busqueda.toLowerCase().trim();
+    const nombre = (pet.name ?? pet.nombre ?? "").toLowerCase();
+    const especie = (pet.speciesName ?? pet.species ?? pet.especie ?? "").toLowerCase();
+    const raza = (pet.breed ?? pet.raza ?? "").toLowerCase();
+    return nombre.includes(term) || especie.includes(term) || raza.includes(term);
+  });
 
   // --- LÓGICA DE CARGA INICIAL Y AUTENTICACIÓN ---
   useEffect(() => {
@@ -54,16 +60,18 @@ const Pets = () => {
   const listAllPets = async () => {
     setIsListLoading(true);
     try {
-      const res = await listPets(authToken);
+      const currentUser = getCurrentUser();
+      const creatorId = currentUser?.id ?? currentUser?.userId ?? null;
+      const res = await listPets(creatorId);
       if (res && Array.isArray(res)) {
-          setMascotas(res);
+        setMascotas(res);
       } else {
-          setMascotas([]);
+        setMascotas([]);
       }
     } catch (err) {
       console.error("Error al listar mascotas:", err);
     } finally {
-        setIsListLoading(false);
+      setIsListLoading(false);
     }
   };
 
@@ -208,7 +216,22 @@ const Pets = () => {
         {/* COLUMNA IZQUIERDA: LISTA DE MASCOTAS (8 columnas) */}
         <div className="col-md-8">
           <div className="card card-sisvet shadow-sm p-3 mb-4">
-            <h3 className="mb-3 text-sisvet-cobalto">Mascotas Registradas</h3>
+            <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <h3 className="mb-0 text-sisvet-cobalto">Mascotas Registradas</h3>
+              <div className="input-group" style={{ maxWidth: "280px" }}>
+                <span className="input-group-text bg-white border-end-0">
+                  <FaSearch className="text-sisvet-cobalto" />
+                </span>
+                <input
+                  type="text"
+                  className="form-control border-start-0"
+                  placeholder="Buscar por nombre, especie o raza..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  aria-label="Buscar mascotas"
+                />
+              </div>
+            </div>
             <hr className="my-2" style={{ borderColor: 'var(--sisvet-platino-dark)' }} />
             
             {isListLoading ? (
@@ -219,6 +242,10 @@ const Pets = () => {
             ) : Mascotas.length === 0 ? (
                 <div className="alert alert-info text-center">
                     Aún no hay mascotas registradas.
+                </div>
+            ) : mascotasFiltradas.length === 0 ? (
+                <div className="alert alert-warning text-center">
+                    No hay mascotas que coincidan con &quot;{busqueda}&quot;.
                 </div>
             ) : (
                 <div className="table-responsive">
@@ -234,7 +261,7 @@ const Pets = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {Mascotas.map((pet, index) => (
+                        {mascotasFiltradas.map((pet, index) => (
                           <tr key={pet.id}>
                             <th scope="row">{index + 1}</th>
                             <td>

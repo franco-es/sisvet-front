@@ -14,5 +14,9 @@ export const http = axios.create({
 http.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  // Para FormData (multipart) no enviar Content-Type: el navegador lo setea con el boundary
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  }
   return config;
 });

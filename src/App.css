@@ -191,6 +191,128 @@ body {
   border-color: var(--sisvet-cobalto);
 }
 
+/* ---------- Cards de procedimientos (Consultas, Vacunas, Cirugías) ---------- */
+.card-procedure {
+  height: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--sisvet-platino-dark);
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
+}
+
+.card-procedure .procedure-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-procedure .procedure-card-header h5 {
+  color: var(--sisvet-cobalto);
+  font-weight: 600;
+  margin: 0;
+}
+
+.card-procedure .table-sisvet-procedure {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.card-procedure .table-sisvet-procedure thead th {
+  background-color: var(--sisvet-cobalto);
+  color: var(--sisvet-platino);
+  font-weight: 600;
+  border-color: var(--sisvet-cobalto);
+  padding: 0.6rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.card-procedure .table-sisvet-procedure tbody td {
+  vertical-align: middle;
+  padding: 0.5rem;
+}
+
+.card-procedure .table-sisvet-procedure tbody tr:hover {
+  background-color: rgba(44, 62, 80, 0.04);
+}
+
+.card-procedure .table-sisvet-procedure .cell-empty {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.card-procedure .procedure-actions {
+  white-space: nowrap;
+}
+
+.card-procedure .procedure-actions .btn-icon {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--sisvet-cobalto);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.card-procedure .procedure-actions .btn-icon:hover {
+  background-color: var(--sisvet-platino-dark);
+  color: var(--sisvet-cobalto);
+}
+
+.card-procedure .procedure-actions .btn-icon.btn-icon-danger:hover {
+  background-color: rgba(231, 76, 60, 0.15);
+  color: #c0392b;
+}
+
+.card-procedure .procedure-actions .dropdown .dropdown-toggle.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-procedure .procedure-empty {
+  color: #6c757d;
+  font-size: 0.95rem;
+  padding: 1.5rem 0;
+  text-align: center;
+}
+
+.card-procedure .btn-add-procedure {
+  font-size: 0.875rem;
+  padding: 0.35rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Botón de dictado por voz (VoiceToTextField) */
+.voice-to-text-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0.35rem;
+  border: 2px solid var(--sisvet-cobalto);
+  background-color: transparent;
+  color: var(--sisvet-cobalto);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.voice-to-text-btn:hover {
+  background-color: var(--sisvet-cobalto);
+  color: var(--sisvet-platino);
+}
+.voice-to-text-btn svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .hero-sisvet {
   background: linear-gradient(135deg, var(--sisvet-cobalto) 0%, #34495e 100%);
   color: var(--sisvet-platino);
@@ -274,8 +396,8 @@ body {
   position: absolute;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(./assets/img/dog_half_face.png);
-  background-size: contain;
+  background-image: url(../public/upscalemedia-transformed.png);
+  background-size: 80%;
   background-color: var(--sisvet-platino);
 }
 
@@ -287,4 +409,28 @@ body {
 
 .bg_transparent {
   background-color: transparent;
+}
+
+.admin-layout {
+  min-height: calc(100vh - 56px);
+  background: var(--sisvet-platino);
+}
+.admin-sidebar {
+  width: 260px;
+  min-height: calc(100vh - 56px);
+  background: #fff;
+}
+.admin-nav .nav-link {
+  color: var(--sisvet-cobalto);
+  padding: 0.75rem 1.25rem;
+}
+.admin-nav .nav-link:hover {
+  background: var(--sisvet-platino);
+}
+.admin-nav .nav-link.active {
+  background: var(--sisvet-cobalto);
+  color: #fff;
+}
+.admin-content {
+  background: var(--sisvet-platino);
 }

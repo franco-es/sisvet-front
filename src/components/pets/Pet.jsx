@@ -3,14 +3,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Card, Button, Row, Col, ListGroup } from "react-bootstrap";
 // IMPORTACIONES PROPIAS
-import UniquePet from "../../services/pets/uniquePet";
-import { listSpecies } from "../../services/pets/listSpecies";
+import { UniquePet, listSpecies, updatePet } from "../../services/pets";
+import { downloadPetProceduresReport } from "../../services/reports";
 import ListConsultas from "./Consultas/ListConsultas";
 import ListVacunas from "./Vacunas/ListVacunas";
 import ListCirugias from "./Cirugias/ListCirugias";
 import Owner from "../owner/Owner";
 import EditPet from "./EditPet";
-import updatePet from "../../services/pets/editPet";
 import moment from "moment";
 
 const Pet = () => {
@@ -39,9 +38,10 @@ const Pet = () => {
       setRaza(data.raza ?? data.breed ?? "");
       setEdad(data.f_nacimiento ?? data.birthDate ?? "");
       setEspecieId(data.speciesId ?? data.species_id ?? "");
-      setConsultas(data.consultas ?? []);
-      setVacunas(data.vacunas ?? []);
-      setCirugias(data.cirugia ?? []);
+      const procedures = data.procedures ?? [];
+      setConsultas(procedures.filter((p) => p.type === "CONSULT"));
+      setVacunas(procedures.filter((p) => p.type === "VACCINE"));
+      setCirugias(procedures.filter((p) => p.type === "SURGERY"));
     });
   }, [token, id]);
 
@@ -124,14 +124,33 @@ const Pet = () => {
           <Owner owner={owner} />
         </Col>
       </Row>
-      <Row className="mt-3">
-        <Col className="justify-content center" xs={12} md={4}>
+      <Row className="mt-3 align-items-center">
+        <Col>
+          <span className="text-sisvet-cobalto fw-bold me-2">Informe de procedimientos</span>
+          <Button
+            size="sm"
+            className="btn-sisvet-outline-cobalto me-1"
+            onClick={() => downloadPetProceduresReport(id, "pdf")}
+          >
+            <i className="far fa-file-pdf me-1" /> PDF
+          </Button>
+          <Button
+            size="sm"
+            className="btn-sisvet-outline-cobalto"
+            onClick={() => downloadPetProceduresReport(id, "excel")}
+          >
+            <i className="far fa-file-excel me-1" /> Excel
+          </Button>
+        </Col>
+      </Row>
+      <Row className="mt-4 g-3">
+        <Col xs={12} lg={4}>
           <ListConsultas idPet={id} consultas={consultas} token={token} />
         </Col>
-        <Col className="justify-content center" xs={12} md={4}>
+        <Col xs={12} lg={4}>
           <ListVacunas idPet={id} vacunas={vacunas} token={token} />
         </Col>
-        <Col className="justify-content center" xs={12} md={4}>
+        <Col xs={12} lg={4}>
           <ListCirugias idPet={id} cirugias={cirugias} token={token} />
         </Col>
       </Row>

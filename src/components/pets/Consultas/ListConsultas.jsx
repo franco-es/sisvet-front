@@ -2,111 +2,202 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import "moment/locale/es";
-// BOOTSTRAP (PascalCase: Linux/Docker es case-sensitive)
+// BOOTSTRAP
 import Table from "react-bootstrap/Table";
-import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
 // MIOS
 import AddConsulta from "./AddConsulta";
-import newConsult from "../../../services/pets/newConsult";
-import deleteConsult from "../../../services/pets/delete/deleteConsulta";
+import {
+  newConsult,
+  editProcedure,
+  deleteConsult,
+} from "../../../services/pets";
+import { downloadProcedureReport } from "../../../services/reports";
+import ReportFormatModal from "../../reports/ReportFormatModal";
+import ProcedureAttachmentsModal from "../../attachments/ProcedureAttachmentsModal";
 
 const ListConsultas = (props) => {
   const [consultas, setConsultas] = useState([]);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [consultaEnEdicion, setConsultaEnEdicion] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportTarget, setReportTarget] = useState(null);
+  const [attachmentsTarget, setAttachmentsTarget] = useState(null);
 
   useEffect(() => setConsultas(props.consultas), [props]);
 
-  const
-    handleAddClick = () => {
-    setShowLoginModal(true);
+  const handleAddClick = () => {
+    setConsultaEnEdicion(null);
+    setShowModal(true);
   };
 
   const handleCloseAddClick = () => {
-    setShowLoginModal(false);
+    setShowModal(false);
+    setConsultaEnEdicion(null);
   };
 
-  async function handelAddConsulta(date, consulta, tratamiento, diagnostico) {
+  async function handelAddConsulta(symptoms, diagnosis, notes, performedAt) {
     await newConsult(
       props.token,
-      date,
-      consulta,
-      tratamiento,
-      diagnostico,
+      symptoms,
+      diagnosis,
+      notes,
+      performedAt,
       props.idPet
     ).then((res) => {
-      const response = res.data.consultas;
-      const data = response[response.length - 1];
-
-      setConsultas([...consultas, { ...data }]);
+      const data = res.data;
+      setConsultas((prev) => [...prev, data]);
       handleCloseAddClick();
     });
   }
 
+  async function handelEditConsulta(procedureId, symptoms, diagnosis, notes, performedAt) {
+    const body = {
+      symptoms,
+      diagnosis,
+      notes,
+      performedAt,
+      type: "CONSULT",
+    };
+    await editProcedure(props.token, props.idPet, procedureId, body).then(
+      (res) => {
+        const updated = res.data;
+        setConsultas((prev) =>
+          prev.map((c) =>
+            (c.id ?? c._id) === procedureId ? { ...c, ...updated } : c
+          )
+        );
+        handleCloseAddClick();
+      }
+    );
+  }
+
   const handleDeleteConsulta = async (idConsulta) => {
     await deleteConsult(props.token, props.idPet, idConsulta).then((res) => {
-      const arrayFiltrado = consultas.filter((item) => item._id !== idConsulta);
-      setConsultas(arrayFiltrado);
+      setConsultas((prev) =>
+        prev.filter((item) => (item.id ?? item._id) !== idConsulta)
+      );
     });
   };
 
-  async function handleEdditConsulta(date, consulta, tratamiento, diagnostico) {
-
-  }
+  const handleEdditConsulta = (item) => {
+    setConsultaEnEdicion(item);
+    setShowModal(true);
+  };
 
   return (
     <>
-      <div>
-        <Row>
-          <h4 className="col-8">Consultas</h4>
-          <Col className="text-right">
-            <Button className="add" onClick={handleAddClick}>
-              <i className="far fa-plus-square"></i>
+      <Card className="card-sisvet card-procedure h-100">
+        <Card.Body>
+          <div className="procedure-card-header">
+            <h5>Consultas</h5>
+            <Button
+              className="btn-sisvet-primary btn-add-procedure"
+              onClick={handleAddClick}
+            >
+              <i className="far fa-plus-square" aria-hidden="true"></i>
+              Agregar consulta
             </Button>
-          </Col>
-        </Row>
-        {consultas.length > 0 ? (
-          <Table striped hover size="lg" className="mt-2">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Fecha</th>
-                <th>Diagnostico</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {consultas.map((item) => (
-                <tr key={item._id}>
-                  <td></td>
-                  <td>{moment(item.fecha).format("L")}</td>
-                  <td>{item.diagnostico}</td>
-                  <td
-                    className="text-content-center"
-                    onClick={(e) => handleEdditConsulta(item._id)}
-                  >
-                    <i className="far fa-edit"></i>
-                  </td>
-                  <td
-                    className="text-content-center"
-                    onClick={(e) => handleDeleteConsulta(item._id)}
-                  >
-                    <i className="far fa-trash-alt"></i>
-                  </td>
+          </div>
+          {consultas.length > 0 ? (
+            <div className="table-responsive">
+            <Table striped hover className="table-sisvet-procedure">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Diagnóstico</th>
+                  <th style={{ width: "150px" }}>Acciones</th>
                 </tr>
+              </thead>
+              <tbody>
+                {consultas.map((item, index) => (
+                  <tr key={item.id ?? item._id ?? `consult-${index}`}>
+                    <td>{moment(item.performedAt ?? item.fecha).format("L")}</td>
+                    <td className={!(item.diagnosis ?? item.diagnostico) ? "cell-empty" : ""}>
+                      {(item.diagnosis ?? item.diagnostico) || "—"}
+                    </td>
+                    <td className="procedure-actions">
+                      <button
+                        type="button"
+                        className="btn-icon"
+                        onClick={() => setAttachmentsTarget(item)}
+                        title="Adjuntos"
+                        aria-label="Adjuntos"
+                      >
+                        <i className="far fa-paperclip" />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-icon"
+                        onClick={() => {
+                          setReportTarget(item);
+                          setShowReportModal(true);
+                        }}
+                        title="Descargar informe"
+                        aria-label="Descargar informe"
+                      >
+                        <i className="far fa-file-alt" />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-icon"
+                        onClick={() => handleEdditConsulta(item)}
+                        title="Editar"
+                        aria-label="Editar consulta"
+                      >
+                        <i className="far fa-edit"></i>
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-icon btn-icon-danger"
+                        onClick={() => handleDeleteConsulta(item.id ?? item._id)}
+                        title="Eliminar"
+                        aria-label="Eliminar consulta"
+                      >
+                        <i className="far fa-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
               ))}
             </tbody>
-          </Table>
-        ) : (
-          <h2>No hay consultas nuevas</h2>
-        )}
-      </div>
+            </Table>
+            </div>
+          ) : (
+            <p className="procedure-empty mb-0">No hay consultas cargadas.</p>
+          )}
+        </Card.Body>
+      </Card>
       <AddConsulta
-        show={showLoginModal}
+        show={showModal}
         handleCloseAddClick={handleCloseAddClick}
         handelAddConsulta={handelAddConsulta}
+        handelEditConsulta={handelEditConsulta}
+        consultaToEdit={consultaEnEdicion}
+      />
+      <ReportFormatModal
+        show={showReportModal}
+        onClose={() => {
+          setShowReportModal(false);
+          setReportTarget(null);
+        }}
+        onSelect={(format) =>
+          reportTarget
+            ? downloadProcedureReport(props.idPet, reportTarget.id ?? reportTarget._id, format)
+            : Promise.resolve()
+        }
+        title="Descargar informe de consulta"
+      />
+      <ProcedureAttachmentsModal
+        show={attachmentsTarget != null}
+        onClose={() => setAttachmentsTarget(null)}
+        petId={props.idPet}
+        procedureId={attachmentsTarget?.id ?? attachmentsTarget?._id}
+        procedureLabel={
+          attachmentsTarget
+            ? `Consulta ${moment(attachmentsTarget.performedAt ?? attachmentsTarget.fecha).format("L")}`
+            : "Consulta"
+        }
       />
     </>
   );

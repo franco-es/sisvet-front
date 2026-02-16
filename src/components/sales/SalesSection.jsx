@@ -1,0 +1,250 @@
+import React, { useState, useEffect } from "react";
+import { Card, Table, Button } from "react-bootstrap";
+import { listSales, cancelSale } from "../../services/sales";
+import { downloadSaleReport } from "../../services/reports";
+import { getMercadoPagoStatus, createMercadoPagoPreference } from "../../services/payments";
+import ReportFormatModal from "../reports/ReportFormatModal";
+import NewSaleModal from "./NewSaleModal";
+import SaleDetailModal from "./SaleDetailModal";
+
+const SalesSection = () => {
+  const [sales, setSales] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showNewModal, setShowNewModal] = useState(false);
+  const [detailSaleId, setDetailSaleId] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportSaleId, setReportSaleId] = useState(null);
+  const [mpConfigured, setMpConfigured] = useState(false);
+  const [payingSaleId, setPayingSaleId] = useState(null);
+
+  const loadSales = async () => {
+    setLoading(true);
+    try {
+      const data = await listSales();
+      setSales(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error al cargar ventas:", err);
+      setSales([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadSales();
+  }, []);
+
+  useEffect(() => {
+    getMercadoPagoStatus()
+      .then((data) => setMpConfigured(data?.configured === true))
+      .catch(() => setMpConfigured(false));
+  }, []);
+
+  const handleCancel = async (id) => {
+    if (!window.confirm("¿Cancelar esta venta? Se devolverá el stock.")) return;
+    try {
+      await cancelSale(id);
+      loadSales();
+    } catch (err) {
+      console.error("Error al cancelar venta:", err);
+    }
+  };
+
+  const formatPrice = (value) => {
+    const n = typeof value === "number" ? value : parseFloat(value);
+    if (isNaN(n)) return "—";
+    return new Intl.NumberFormat("es-AR", {
+      style: "currency",
+      currency: "ARS",
+    }).format(n);
+  };
+
+  const formatDate = (value) => {
+    if (!value) return "—";
+    return new Date(value).toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const statusLabel = (s) => {
+    if (s === "COMPLETED") return "Completada";
+    if (s === "PENDING") return "Pendiente";
+    if (s === "CANCELLED") return "Cancelada";
+    return s || "—";
+  };
+
+  const paymentStatusLabel = (p) => {
+    if (p === "PAID") return "Pagado";
+    if (p === "PENDING_PAYMENT") return "Pago pendiente";
+    if (p === "REJECTED") return "Rechazado";
+    return p ? String(p) : "—";
+  };
+
+  const invoiceTypeLabel = (t) => {
+    if (!t) return "—";
+    const map = { FACTURA_A: "F. A", FACTURA_B: "F. B", FACTURA_C: "F. C", FACTURA_ELECTRONICA: "F. electr." };
+    return map[t] || t;
+  };
+
+  const paymentTypeLabel = (t) => {
+    if (!t) return "—";
+    const map = { EFECTIVO: "Efectivo", TARJETA: "Tarjeta", MERCADO_PAGO: "Mercado Pago" };
+    return map[t] || t;
+  };
+
+  const handlePayWithMP = async (sale) => {
+    const url = sale?.mpCheckoutUrl;
+    if (url) {
+      window.location.href = url;
+      return;
+    }
+    const saleId = sale?.id ?? sale;
+    setPayingSaleId(saleId);
+    try {
+      const data = await createMercadoPagoPreference(saleId);
+      const redirectUrl = data?.mpCheckoutUrl ?? data?.initPoint;
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+    } catch (err) {
+      console.error("Error al crear preferencia de pago:", err);
+    } finally {
+      setPayingSaleId(null);
+    }
+  };
+
+  return (
+    <>
+      <Card className="card-sisvet card-procedure h-100">
+        <Card.Body>
+          <div className="procedure-card-header">
+            <h5>Ventas</h5>
+            <Button
+              className="btn-sisvet-primary btn-add-procedure"
+              onClick={() => setShowNewModal(true)}
+            >
+              <i className="far fa-plus-square" aria-hidden="true"></i>
+              Nueva venta
+            </Button>
+          </div>
+          {loading ? (
+            <p className="procedure-empty mb-0">Cargando...</p>
+          ) : sales.length === 0 ? (
+            <p className="procedure-empty mb-0">No hay ventas registradas.</p>
+          ) : (
+            <div className="table-responsive">
+              <Table striped hover className="table-sisvet-procedure">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Factura</th>
+                    <th>Tipo pago</th>
+                    <th>Estado</th>
+                    <th>Estado pago</th>
+                    <th style={{ width: "180px" }}>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sales.map((s) => (
+                    <tr key={s.id}>
+                      <td>{formatDate(s.saleDate)}</td>
+                      <td>{formatPrice(s.total)}</td>
+                      <td>
+                        {s.invoiceTypeName ?? invoiceTypeLabel(s.invoiceType)}
+                        {s.electronicInvoiceCae && (
+                          <span className="ms-1 text-success" title="Factura electrónica emitida">
+                            <i className="fas fa-file-invoice" aria-hidden="true"></i>
+                          </span>
+                        )}
+                      </td>
+                      <td>{s.paymentTypeName ?? paymentTypeLabel(s.paymentType)}</td>
+                      <td>{statusLabel(s.status)}</td>
+                      <td>
+                        {paymentStatusLabel(s.paymentStatus)}
+                        {s.paymentStatus === "PENDING_PAYMENT" && mpConfigured && (
+                          <Button
+                            size="sm"
+                            className="btn-sisvet-primary ms-2"
+                            disabled={payingSaleId === s.id}
+                            onClick={() => handlePayWithMP(s)}
+                          >
+                            {payingSaleId === s.id ? "..." : "Pagar con MP"}
+                          </Button>
+                        )}
+                      </td>
+                      <td className="procedure-actions">
+                        <button
+                          type="button"
+                          className="btn-icon"
+                          onClick={() => {
+                            setReportSaleId(s.id);
+                            setShowReportModal(true);
+                          }}
+                          title="Descargar informe"
+                          aria-label="Descargar informe"
+                        >
+                          <i className="far fa-file-alt" />
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-icon"
+                          onClick={() => setDetailSaleId(s.id)}
+                          title="Ver detalle"
+                          aria-label="Ver detalle"
+                        >
+                          <i className="far fa-eye"></i>
+                        </button>
+                        {s.status === "PENDING" && (
+                          <button
+                            type="button"
+                            className="btn-icon btn-icon-danger"
+                            onClick={() => handleCancel(s.id)}
+                            title="Cancelar venta"
+                            aria-label="Cancelar venta"
+                          >
+                            <i className="far fa-times-circle"></i>
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          )}
+        </Card.Body>
+      </Card>
+      <NewSaleModal
+        show={showNewModal}
+        onClose={() => setShowNewModal(false)}
+        onSuccess={loadSales}
+        mpConfigured={mpConfigured}
+      />
+      <SaleDetailModal
+        show={detailSaleId != null}
+        onClose={() => setDetailSaleId(null)}
+        saleId={detailSaleId}
+        onEmitted={loadSales}
+      />
+      <ReportFormatModal
+        show={showReportModal}
+        onClose={() => {
+          setShowReportModal(false);
+          setReportSaleId(null);
+        }}
+        onSelect={(format) =>
+          reportSaleId ? downloadSaleReport(reportSaleId, format) : Promise.resolve()
+        }
+        title="Descargar informe de venta"
+      />
+    </>
+  );
+};
+
+export default SalesSection;

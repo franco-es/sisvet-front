@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Se mantiene, pero se usa menos
 // FUNCIONES PROPIAS
 import Registro from "./Registro"; // COMPONENT DE Registro
-import { login } from "../../services/users/login"; //function de logeo
+import { login } from "../../services/users";
 
 const Login = ({ onAuthSuccess }) => { // 👈 Agregamos una prop para notificar el éxito
   const [email, setEmail] = useState("");

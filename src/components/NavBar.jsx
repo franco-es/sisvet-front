@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
+import { hasVentasRole, hasAdminRole } from "../utils/auth";
 
 // Recibe 'auth' (booleano) y 'onLogout' (función) desde App.jsx
 const NavBar = ({ auth, onLogout }) => {
@@ -51,7 +52,22 @@ return (
                 Owners
               </Nav.Link>
             )}
-          </Nav>
+            {isAuthenticated && hasVentasRole() && (
+              <Nav.Link as={NavLink} to="/ventas">
+                Ventas
+              </Nav.Link>
+            )}
+            {isAuthenticated && (
+              <Nav.Link as={NavLink} to="/transcribir">
+                Transcribir
+              </Nav.Link>
+            )}
+            {isAuthenticated && hasAdminRole() && (
+              <Nav.Link as={NavLink} to="/admin">
+                Admin
+              </Nav.Link>
+            )}
+          </Nav>
           
           {/* Nav de la derecha: Login/Logout. 
              La clase 'ms-auto' (margin-start: auto) empuja este grupo 

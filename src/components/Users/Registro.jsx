@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 // Se mantiene 'useNavigate' por si se requiere redirección local, 
 // aunque la redirección principal la manejará App.jsx
-import { register } from "../../services/users/register"; // Función de registro
+import { register } from "../../services/users";
 
 // El componente Registro se renderiza dentro de Login, por lo que no necesita un botón de "Volver al Login"
 // dentro de sí, ya que el botón de toggle está en el componente padre (Login).

@@ -8,6 +8,12 @@ import Pets from "./components/pets/Pets";
 import Pet from "./components/pets/Pet";
 import Inicio from "./components/Inicio";
 import OwnersPlaceholder from "./components/owner/OwnersPlaceholder";
+import Ventas from "./components/sales/Ventas";
+import Transcribir from "./components/transcription/Transcribir";
+import Admin from "./components/admin/Admin";
+import PaymentSuccess from "./components/payment/PaymentSuccess";
+import PaymentPending from "./components/payment/PaymentPending";
+import PaymentFailure from "./components/payment/PaymentFailure";
 
 function App() {
   const [authUser, setAuthUser] = React.useState(false);
@@ -31,6 +37,12 @@ function App() {
           <Route path="/pet/:id" element={<Pet />} />
           <Route path="/pets" element={<Pets />} />
           <Route path="/owners" element={<OwnersPlaceholder />} />
+          <Route path="/ventas" element={<Ventas />} />
+          <Route path="/transcribir" element={<Transcribir />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/pending" element={<PaymentPending />} />
+          <Route path="/payment/failure" element={<PaymentFailure />} />
         </Routes>
       </div>
     </Router>

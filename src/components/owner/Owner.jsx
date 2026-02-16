@@ -7,9 +7,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 
 // PROPIOS
 import AddEditOwner from "./AddEditOwner";
-import addEditOwnerAPI from "../../services/owner/addOwner";
-// import moment from "moment";
-import getOwner from "../../services/owner/getOwner";
+import { addOwnerAPI, editOwnerAPI, getOwner } from "../../services/owner";
 
 const Owner = (props) => {
   const [showOwnerModal, SetShowOwnerModal] = useState(false);
@@ -26,20 +24,22 @@ const Owner = (props) => {
   const { id } = useParams();
 
   const handleGetOwner = useCallback(async () => {
-    await getOwner(token, id).then((res) => {
-      let owner = res;
-      console.log(owner);
-      if (owner === undefined) {
+    try {
+      const res = await getOwner(token, id);
+      const ownerData = res.data?.owner ?? res.data;
+      if (!ownerData) {
         setOwner(false);
-      } else {
-        setOwner(true);
-        setNombre(owner.firstName);
-        setApellido(owner.lastName);
-        setTelefono(owner.phone);
-        setDireccion(owner.address);
-        setEmail(owner.email);
+        return;
       }
-    });
+      setOwner(true);
+      setNombre(ownerData.firstName ?? ownerData.nombre ?? "");
+      setApellido(ownerData.lastName ?? ownerData.apellido ?? "");
+      setTelefono(ownerData.phone ?? ownerData.telefono ?? "");
+      setDireccion(ownerData.address ?? ownerData.direccion ?? "");
+      setEmail(ownerData.email ?? "");
+    } catch {
+      setOwner(false);
+    }
   }, [token, id]);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const Owner = (props) => {
   };
 
   async function addOwner(nombre, apellido, telefono, direccion, email, type) {
-    await addEditOwnerAPI(
+    await addOwnerAPI(
       token,
       id,
       nombre,
@@ -69,6 +69,7 @@ const Owner = (props) => {
       email,
       type
     ).then((res) => {
+      console.log(res);
       var data = res;
       setOwner(true);
       setNombre(data.firstName);
@@ -81,7 +82,7 @@ const Owner = (props) => {
   }
 
   async function editOwner(nombre, apellido, telefono, direccion, email, type) {
-    await addEditOwnerAPI(
+    await editOwnerAPI(
       token,
       id,
       nombre,
