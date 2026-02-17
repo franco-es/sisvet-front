@@ -94,7 +94,7 @@ const AdminMercadoPagoConfig = () => {
 
   if (loading) {
     return (
-      <Card className="card-sisvet mb-4">
+      <Card className="card-sisvet h-100">
         <Card.Header className="bg-sisvet-cobalto text-white">
           Mercado Pago
         </Card.Header>
@@ -106,7 +106,7 @@ const AdminMercadoPagoConfig = () => {
   }
 
   return (
-    <Card className="card-sisvet mb-4">
+    <Card className="card-sisvet h-100">
       <Card.Header className="bg-sisvet-cobalto text-white d-flex justify-content-between align-items-center">
         <span>Mercado Pago</span>
         {mpStatus?.configured ? (

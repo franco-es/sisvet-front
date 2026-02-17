@@ -3,6 +3,7 @@ import { Card, Table, Button } from "react-bootstrap";
 import { listSales, cancelSale } from "../../services/sales";
 import { downloadSaleReport } from "../../services/reports";
 import { getMercadoPagoStatus, createMercadoPagoPreference } from "../../services/payments";
+import { getArcaConfig } from "../../services/arcaConfig";
 import ReportFormatModal from "../reports/ReportFormatModal";
 import NewSaleModal from "./NewSaleModal";
 import SaleDetailModal from "./SaleDetailModal";
@@ -15,6 +16,7 @@ const SalesSection = () => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportSaleId, setReportSaleId] = useState(null);
   const [mpConfigured, setMpConfigured] = useState(false);
+  const [arcaConfigured, setArcaConfigured] = useState(false);
   const [payingSaleId, setPayingSaleId] = useState(null);
 
   const loadSales = async () => {
@@ -38,6 +40,12 @@ const SalesSection = () => {
     getMercadoPagoStatus()
       .then((data) => setMpConfigured(data?.configured === true))
       .catch(() => setMpConfigured(false));
+  }, []);
+
+  useEffect(() => {
+    getArcaConfig()
+      .then((data) => setArcaConfigured(data?.configured === true))
+      .catch(() => setArcaConfigured(false));
   }, []);
 
   const handleCancel = async (id) => {
@@ -231,6 +239,7 @@ const SalesSection = () => {
         onClose={() => setDetailSaleId(null)}
         saleId={detailSaleId}
         onEmitted={loadSales}
+        arcaConfigured={arcaConfigured}
       />
       <ReportFormatModal
         show={showReportModal}

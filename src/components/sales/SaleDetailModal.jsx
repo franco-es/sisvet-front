@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Table, Button } from "react-bootstrap";
 import { getSale, emitElectronicInvoice } from "../../services/sales";
 
-const SaleDetailModal = ({ show, onClose, saleId, onEmitted }) => {
+const SaleDetailModal = ({ show, onClose, saleId, onEmitted, arcaConfigured = false }) => {
   const [sale, setSale] = useState(null);
   const [loading, setLoading] = useState(false);
   const [emitting, setEmitting] = useState(false);
@@ -40,8 +40,16 @@ const SaleDetailModal = ({ show, onClose, saleId, onEmitted }) => {
   };
 
   const hasElectronicInvoice = sale?.electronicInvoiceCae != null && sale?.electronicInvoiceCae !== "";
+  const isElectronicInvoiceType = () => {
+    const name = (sale?.invoiceTypeName || "").toLowerCase();
+    if (name.includes("electrónica") || name.includes("electronica")) return true;
+    return sale?.invoiceType === "FACTURA_ELECTRONICA";
+  };
   const canEmitElectronicInvoice =
-    sale?.status === "COMPLETED" && !hasElectronicInvoice;
+    sale?.status === "COMPLETED" &&
+    !hasElectronicInvoice &&
+    arcaConfigured &&
+    isElectronicInvoiceType();
 
   const formatPrice = (value) => {
     const n = typeof value === "number" ? value : parseFloat(value);

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Nav, Card } from "react-bootstrap";
+import { Nav, Card, Row, Col } from "react-bootstrap";
 import { hasAdminRole } from "../../utils/auth";
 import AdminMercadoPagoConfig from "./AdminMercadoPagoConfig";
+import AdminArcaConfig from "./AdminArcaConfig";
 import AdminUsers from "./AdminUsers";
 import AdminConfigGeneral from "./AdminConfigGeneral";
 
@@ -22,13 +23,30 @@ const Admin = () => {
   const renderContent = () => {
     switch (category) {
       case "integraciones":
-        return <AdminMercadoPagoConfig />;
+        return (
+          <div className="integraciones-dashboard">
+            <h5 className="mb-3 text-sisvet-cobalto">Integraciones</h5>
+            <Row xs={1} lg={2} className="g-4">
+              <Col>
+                <AdminMercadoPagoConfig />
+              </Col>
+              <Col>
+                <AdminArcaConfig />
+              </Col>
+            </Row>
+          </div>
+        );
       case "usuarios":
         return <AdminUsers />;
       case "config":
         return <AdminConfigGeneral />;
       default:
-        return <AdminMercadoPagoConfig />;
+        return (
+          <Row xs={1} lg={2} className="g-4">
+            <Col><AdminMercadoPagoConfig /></Col>
+            <Col><AdminArcaConfig /></Col>
+          </Row>
+        );
     }
   };
 
