@@ -9,6 +9,7 @@ import Pet from "./components/pets/Pet";
 import Inicio from "./components/Inicio";
 import OwnersPlaceholder from "./components/owner/OwnersPlaceholder";
 import Ventas from "./components/sales/Ventas";
+import Turnos from "./components/turnos/Turnos";
 import Transcribir from "./components/transcription/Transcribir";
 import Admin from "./components/admin/Admin";
 import PaymentSuccess from "./components/payment/PaymentSuccess";
@@ -38,6 +39,7 @@ function App() {
           <Route path="/pets" element={<Pets />} />
           <Route path="/owners" element={<OwnersPlaceholder />} />
           <Route path="/ventas" element={<Ventas />} />
+          <Route path="/turnos" element={<Turnos />} />
           <Route path="/transcribir" element={<Transcribir />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/payment/success" element={<PaymentSuccess />} />

@@ -1,23 +1,53 @@
 import { http } from "../api/http";
 
 // —— Mascotas ——
+// Ver docs PET-ENDPOINTS.md: GET/POST/PUT/DELETE /api/pets
 
 /**
- * Lista mascotas. Si se pasa creatorId (id del usuario logueado), el backend puede filtrar por ese creador.
+ * Lista todas las mascotas del usuario. GET /api/pets
  */
 export async function listPets(creatorId = null) {
-  const url =
-    creatorId != null ? `/pets?creatorId=${encodeURIComponent(creatorId)}` : "/pets";
+  const res = await http.get("/pets");
+  return res.data;
+}
+
+/**
+ * Lista mascotas cuyo nombre contenga el texto. GET /api/pets?search=nombre
+ */
+export async function listPetsSearch(search = "") {
+  const url = search.trim() ? `/pets?search=${encodeURIComponent(search.trim())}` : "/pets";
   const res = await http.get(url);
   return res.data;
 }
 
-export async function createPet(token, name, speciesId, breed, color, birthDate) {
-  const body = { name, speciesId, breed, color, birthDate };
+/**
+ * Devuelve una mascota por ID. GET /api/pets/{id}
+ */
+export async function getPet(id) {
+  const res = await http.get(`/pets/${id}`);
+  return res.data;
+}
+
+/**
+ * Crea una mascota. POST /api/pets
+ * Body PetDto: name (requerido), speciesId (recomendado), speciesName (opcional), breed, color, birthDate (opcionales).
+ */
+export async function createPet(token, name, speciesId, breed, color, birthDate, speciesName = null) {
+  const body = { name: name ?? "" };
+  const sid = speciesId != null && speciesId !== "" ? Number(speciesId) : undefined;
+  if (sid != null) body.speciesId = sid;
+  if (speciesName != null && speciesName !== "") body.speciesName = speciesName;
+  if (breed != null && breed !== "") body.breed = breed;
+  if (color != null && color !== "") body.color = color;
+  if (birthDate != null && birthDate !== "") body.birthDate = birthDate;
   const res = await http.post("/pets", body);
   return res;
 }
 
+/**
+ * Actualiza una mascota. PUT /api/pets/{id}
+ * Body: mismo que crear (actualización parcial).
+ */
 export async function updatePet(
   token,
   name,
@@ -27,11 +57,20 @@ export async function updatePet(
   birthDate,
   idPet
 ) {
-  const body = { name, speciesId, breed, color, birthDate };
+  const body = {};
+  if (name != null) body.name = name;
+  const sid = speciesId != null && speciesId !== "" ? Number(speciesId) : undefined;
+  if (sid != null) body.speciesId = sid;
+  if (breed != null) body.breed = breed;
+  if (color != null) body.color = color;
+  if (birthDate != null) body.birthDate = birthDate;
   const res = await http.put(`/pets/${idPet}`, body);
   return res;
 }
 
+/**
+ * @deprecated Usar getPet(id). Mantenido por compatibilidad.
+ */
 export async function UniquePet(token, idPet) {
   const res = await http.get(`/pets/${idPet}`);
   return res;
@@ -42,8 +81,11 @@ export async function listSpecies() {
   return res.data;
 }
 
-export async function deletePet(token, idPet) {
-  return http.delete(`/pet/delete?idPet=${idPet}`);
+/**
+ * Elimina una mascota. DELETE /api/pets/{id} → 204 sin cuerpo.
+ */
+export function deletePet(token, idPet) {
+  return http.delete(`/pets/${idPet}`);
 }
 
 // —— Procedimientos (consultas, vacunas, cirugías) ——

@@ -1,6 +1,6 @@
 // LIBRERIAS REQUERIDAS
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Container, Card, Button, Row, Col, ListGroup } from "react-bootstrap";
 // IMPORTACIONES PROPIAS
 import { UniquePet, listSpecies, updatePet } from "../../services/pets";
@@ -111,12 +111,22 @@ const Pet = () => {
                   </ListGroup.Item>
                 </ListGroup>
               </Card.Text>
-              <Button
-                className="btn-sisvet-outline-cobalto"
-                onClick={showEditModalFunction}
-              >
-                Editar
-              </Button>
+              <div className="d-flex gap-2 flex-wrap">
+                <Button
+                  className="btn-sisvet-outline-cobalto"
+                  onClick={showEditModalFunction}
+                >
+                  Editar
+                </Button>
+                <Button
+                  as={Link}
+                  to={`/turnos?petId=${id}`}
+                  className="btn-sisvet-primary"
+                >
+                  <i className="far fa-calendar-plus me-1" aria-hidden="true" />
+                  Agendar turno
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </Col>

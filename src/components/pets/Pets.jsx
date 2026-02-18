@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEdit, FaTrashAlt, FaPlus, FaSpinner, FaSearch } from 'react-icons/fa';
 
-import { listPets, createPet, updatePet, listSpecies } from "../../services/pets";
+import { listPets, createPet, updatePet, listSpecies, deletePet as deletePetService } from "../../services/pets";
 import { getCurrentUser } from "../../utils/auth"; 
 
 const Pets = () => {
@@ -168,8 +168,11 @@ const Pets = () => {
           petF_Nacimiento
         );
         if (res?.data) {
-          setMascotas((prev) => [...prev, { ...res.data, id: res.data.id ?? res.data._id }]);
+          const newPet = { ...res.data, id: res.data.id ?? res.data._id };
+          setMascotas((prev) => [...prev, newPet]);
           cancelarEdicion();
+          const newId = newPet.id ?? res.data?.id ?? res.data?._id;
+          if (newId != null) navigate(`/pet/${newId}`);
         } else {
           setError("Error al agregar la mascota. Respuesta incompleta.");
         }
@@ -186,8 +189,18 @@ const Pets = () => {
     }
   };
 
-  const deletePet = (petId) => {
-    // TODO: deletePetService(authToken, petId) y actualizar lista
+  const handleDeletePet = async (pet) => {
+    const id = pet?.id ?? pet?._id;
+    if (!id) return;
+    if (!window.confirm(`¿Eliminar la mascota "${pet.name ?? pet.nombre ?? "esta mascota"}"? Esta acción no se puede deshacer.`)) return;
+    try {
+      await deletePetService(authToken, id);
+      setMascotas((prev) => prev.filter((p) => (p.id ?? p._id) !== id));
+      if (petIdEnEdicion === id) cancelarEdicion();
+    } catch (err) {
+      console.error("Error al eliminar mascota:", err);
+      setError(err?.response?.data?.message || err?.message || "No se pudo eliminar la mascota.");
+    }
   };
 
   const fetchAllSpecies = async () => {
@@ -283,7 +296,9 @@ const Pets = () => {
                               {/* Botón de Eliminar */}
                               <button 
                                 className="btn btn-sm btn-outline-danger" 
-                                onClick={() => deletePet(pet._id)}
+                                onClick={() => handleDeletePet(pet)}
+                                title="Eliminar mascota"
+                                aria-label="Eliminar mascota"
                               >
                                 <FaTrashAlt />
                               </button>

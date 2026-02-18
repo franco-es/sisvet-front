@@ -52,6 +52,11 @@ return (
                 Owners
               </Nav.Link>
             )}
+            {isAuthenticated && (
+              <Nav.Link as={NavLink} to="/turnos">
+                Turnos
+              </Nav.Link>
+            )}
             {isAuthenticated && hasVentasRole() && (
               <Nav.Link as={NavLink} to="/ventas">
                 Ventas
