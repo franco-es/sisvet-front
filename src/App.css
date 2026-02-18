@@ -58,6 +58,100 @@ body {
   padding-right: 1.5em;
 }
 
+/* ---------- Navbar rediseño: más espacio y claridad ---------- */
+.navbar-sisvet-redesign .navbar-sisvet-container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.navbar-sisvet-redesign .navbar-sisvet-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.navbar-sisvet-redesign .navbar-sisvet-link {
+  padding: 0.5rem 1rem !important;
+  margin: 0 0.15rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.navbar-sisvet-redesign .navbar-sisvet-link:hover,
+.navbar-sisvet-redesign .navbar-sisvet-link:focus {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.navbar-sisvet-redesign .navbar-sisvet-link.active {
+  background-color: rgba(46, 204, 113, 0.25) !important;
+  color: var(--sisvet-menta) !important;
+}
+
+.navbar-sisvet-redesign .navbar-sisvet-nav-right {
+  margin-left: auto;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.language-switcher {
+  flex-shrink: 0;
+}
+
+.language-switcher-btn {
+  min-width: 2rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--sisvet-platino);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.language-switcher-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.language-switcher-btn.active {
+  background: var(--sisvet-menta);
+  color: #fff;
+  border-color: var(--sisvet-menta);
+}
+
+.navbar-sisvet-redesign .navbar-sisvet-logout,
+.navbar-sisvet-redesign .navbar-sisvet-login {
+  font-weight: 500;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-sisvet-redesign .navbar-sisvet-nav {
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+  .navbar-sisvet-redesign .navbar-sisvet-nav-right {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .navbar-sisvet-redesign .navbar-sisvet-link {
+    margin: 0;
+    padding: 0.6rem 1rem !important;
+  }
+}
+
 /* ---------- Botones primarios (Verde Menta) ---------- */
 .btn-sisvet-primary {
   background-color: var(--sisvet-menta);
@@ -183,6 +277,108 @@ body {
   color: var(--sisvet-menta);
 }
 
+/* ---------- Página de Login ---------- */
+.login-page {
+  min-height: calc(100vh - 56px);
+  background: linear-gradient(160deg, var(--sisvet-platino) 0%, var(--sisvet-platino-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.login-page-inner {
+  width: 100%;
+  max-width: 420px;
+}
+
+.login-card-wrap {
+  width: 100%;
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.12);
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(44, 62, 80, 0.08);
+}
+
+.login-card-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.login-logo-wrap {
+  margin-bottom: 1rem;
+}
+
+.login-logo {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+}
+
+.login-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--sisvet-cobalto);
+  margin: 0 0 0.25rem 0;
+}
+
+.login-subtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.login-form .login-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sisvet-cobalto);
+  margin-bottom: 0.35rem;
+}
+
+.login-form .login-input {
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+}
+
+.login-form .login-input:focus {
+  border-color: var(--sisvet-cobalto);
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.12);
+}
+
+.login-form .login-alert {
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.btn-login {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.login-toggle-text {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.link-sisvet {
+  color: var(--sisvet-cobalto) !important;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-sisvet:hover {
+  color: var(--sisvet-cobalto-hover) !important;
+  text-decoration: underline;
+}
+
 /* ---------- Tablas y secciones ---------- */
 .thead-sisvet th {
   background-color: var(--sisvet-cobalto);
@@ -287,6 +483,147 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+}
+
+/* ---------- Página Mascotas (Pets) ---------- */
+.pets-page {
+  padding: 1.5rem 1rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.pets-page-hero {
+  margin-bottom: 1.5rem;
+}
+
+.pets-page-hero h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--sisvet-cobalto);
+  margin: 0 0 0.25rem 0;
+}
+
+.pets-page-hero .pets-page-subtitle {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.pets-page-list-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+  border: 1px solid rgba(44, 62, 80, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pets-page-list-card .pets-page-list-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--sisvet-cobalto);
+  margin: 0 0 1rem 0;
+}
+
+.pets-page-search {
+  max-width: 320px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  background: #fff;
+}
+
+.pets-page-search .input-group-text {
+  background: #fff;
+  border: none;
+  border-right: 1px solid #dee2e6;
+  color: var(--sisvet-cobalto);
+}
+
+.pets-page-search .form-control {
+  border: none;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+}
+
+.pets-page-search .form-control:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.pets-page-table {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.pets-page-table thead th {
+  background-color: var(--sisvet-cobalto);
+  color: var(--sisvet-platino);
+  font-weight: 600;
+  border-color: var(--sisvet-cobalto);
+  padding: 0.65rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.pets-page-table tbody td {
+  vertical-align: middle;
+  padding: 0.6rem 0.75rem;
+}
+
+.pets-page-table tbody tr:hover {
+  background-color: rgba(44, 62, 80, 0.04);
+}
+
+.pets-page-actions .btn {
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pets-page-form-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+  border: 1px solid rgba(44, 62, 80, 0.06);
+  padding: 1.75rem 1.5rem;
+}
+
+.pets-page-form-card .pets-form-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--sisvet-cobalto);
+  margin: 0 0 1.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pets-page-form-card .pets-form-title svg {
+  color: var(--sisvet-menta);
+  flex-shrink: 0;
+}
+
+.pets-form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sisvet-cobalto);
+  margin-bottom: 0.35rem;
+}
+
+.pets-form-input {
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+}
+
+.pets-form-input:focus {
+  border-color: var(--sisvet-cobalto);
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.12);
+}
+
+.pets-page-form-card .form-select.pets-form-input {
+  background-color: #fff;
 }
 
 /* Botón de dictado por voz (VoiceToTextField) */

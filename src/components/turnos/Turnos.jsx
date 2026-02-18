@@ -47,6 +47,7 @@ const Turnos = () => {
       return;
     }
     loadAppointments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- loadAppointments estable por statusFilter
   }, [navigate, statusFilter]);
 
   useEffect(() => {
@@ -55,6 +56,7 @@ const Turnos = () => {
       setShowModal(true);
       setSearchParams({});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al montar o cambiar petIdFromQuery
   }, [petIdFromQuery]);
 
   const formatDateTime = (value) => {

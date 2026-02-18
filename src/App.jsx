@@ -1,5 +1,6 @@
 import "./App.css";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import NavBar from "./components/NavBar";
@@ -17,6 +18,7 @@ import PaymentPending from "./components/payment/PaymentPending";
 import PaymentFailure from "./components/payment/PaymentFailure";
 
 function App() {
+  const { t } = useTranslation();
   const [authUser, setAuthUser] = React.useState(false);
 
   React.useEffect(() => {
@@ -49,7 +51,7 @@ function App() {
       </div>
     </Router>
   ) : (
-    <p>Cargando...</p>
+    <p>{t("common.loading")}</p>
   );
 }
 
