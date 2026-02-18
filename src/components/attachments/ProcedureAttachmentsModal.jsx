@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Modal, Button, Form, Table } from "react-bootstrap";
+import { FaUpload } from "react-icons/fa";
 import {
   listAttachments,
   uploadAttachment,
@@ -127,9 +128,10 @@ const ProcedureAttachmentsModal = ({
           />
           <Button
             type="submit"
-            className="btn-sisvet-primary"
+            className="btn-sisvet-primary d-inline-flex align-items-center gap-2"
             disabled={!file || uploading}
           >
+            <FaUpload aria-hidden />
             {uploading ? "Subiendo…" : "Subir"}
           </Button>
         </Form>

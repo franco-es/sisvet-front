@@ -626,6 +626,285 @@ body {
   background-color: #fff;
 }
 
+/* ---------- Página detalle de mascota (Pet) ---------- */
+.pet-detail-page {
+  padding: 1.5rem 1rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.pet-detail-hero {
+  margin-bottom: 1.5rem;
+}
+
+.pet-detail-hero h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--sisvet-cobalto);
+  margin: 0 0 0.25rem 0;
+}
+
+.pet-detail-hero .pet-detail-subtitle {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.pet-detail-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+  border: 1px solid rgba(44, 62, 80, 0.06);
+  padding: 1.5rem;
+  height: 100%;
+}
+
+.pet-detail-card .card-title,
+.pet-detail-card .pet-detail-card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--sisvet-cobalto);
+  margin: 0 0 1rem 0;
+}
+
+.pet-detail-card .pet-detail-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--sisvet-cobalto);
+  text-align: center;
+  margin: 0 0 1rem 0;
+}
+
+.pet-detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--sisvet-platino);
+  font-size: 0.95rem;
+}
+
+.pet-detail-row:last-of-type {
+  border-bottom: none;
+}
+
+.pet-detail-row .pet-detail-label {
+  font-weight: 600;
+  color: var(--sisvet-cobalto);
+  min-width: 100px;
+  margin-right: 0.5rem;
+}
+
+.pet-detail-row .pet-detail-value {
+  color: #212529;
+}
+
+.pet-detail-card .pet-detail-actions {
+  margin-top: 2.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pet-detail-card .pet-detail-actions .btn {
+  border-radius: 10px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+.pet-detail-report-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.pet-detail-report-bar .pet-detail-report-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--sisvet-cobalto);
+  margin: 0;
+}
+
+.pet-detail-report-bar .btn {
+  border-radius: 8px;
+  font-size: 0.875rem;
+  padding: 0.35rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pet-detail-procedures {
+  margin-top: 1.5rem;
+}
+
+.pet-detail-procedures .card-procedure,
+.pet-detail-procedures-card {
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+  border: 1px solid rgba(44, 62, 80, 0.06);
+  padding: 1rem;
+}
+
+.pet-detail-procedures-nav {
+  border-bottom: 2px solid var(--sisvet-platino-dark);
+  margin-bottom: 1rem;
+  gap: 0;
+}
+
+.pet-detail-procedures-nav .nav-link {
+  color: var(--sisvet-cobalto);
+  font-weight: 500;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  padding: 0.6rem 1rem;
+  margin-bottom: -2px;
+}
+
+.pet-detail-procedures-nav .nav-link:hover {
+  color: var(--sisvet-cobalto-hover);
+  border-color: transparent;
+  background: rgba(44, 62, 80, 0.06);
+}
+
+.pet-detail-procedures-nav .nav-link.active {
+  color: var(--sisvet-menta);
+  background: transparent;
+  border-bottom-color: var(--sisvet-menta);
+}
+
+.pet-detail-procedures-content {
+  padding-top: 0;
+}
+
+/* ---------- Página Turnos ---------- */
+.turnos-page {
+  padding: 1.5rem 1rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.turnos-page-hero {
+  margin-bottom: 1.5rem;
+}
+
+.turnos-page-hero h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--sisvet-cobalto);
+  margin: 0 0 0.25rem 0;
+}
+
+.turnos-page-hero .turnos-page-subtitle {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.turnos-page-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+  border: 1px solid rgba(44, 62, 80, 0.06);
+  padding: 1.5rem;
+}
+
+.turnos-page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.turnos-page-filter {
+  min-width: 180px;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+.turnos-page-filter:focus {
+  border-color: var(--sisvet-cobalto);
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.12);
+}
+
+.turnos-page-table {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.turnos-page-table thead th {
+  background-color: var(--sisvet-cobalto);
+  color: var(--sisvet-platino);
+  font-weight: 600;
+  border-color: var(--sisvet-cobalto);
+  padding: 0.65rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.turnos-page-table tbody td {
+  vertical-align: middle;
+  padding: 0.6rem 0.75rem;
+}
+
+.turnos-page-table tbody tr:hover {
+  background-color: rgba(44, 62, 80, 0.04);
+}
+
+.turnos-page-actions {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.turnos-page-actions .btn-icon {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--sisvet-cobalto);
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  vertical-align: middle;
+}
+
+.turnos-page-actions .btn-icon:hover {
+  background-color: var(--sisvet-platino-dark);
+  color: var(--sisvet-cobalto);
+}
+
+.turnos-page-actions .btn-icon.btn-icon-danger:hover {
+  background-color: rgba(231, 76, 60, 0.15);
+  color: #c0392b;
+}
+
+.turnos-page-actions .btn-icon.text-success:hover {
+  color: var(--sisvet-menta);
+}
+
+.turnos-page-actions .btn-icon.text-warning:hover {
+  color: #e67e22;
+}
+
+.turnos-page-badge {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+}
+
 /* Botón de dictado por voz (VoiceToTextField) */
 .voice-to-text-btn {
   display: inline-flex;

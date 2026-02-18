@@ -57,7 +57,7 @@ const AddEditOwner = (props) => {
     }
     setError(null);
 
-    if (props.isEdit == true) {
+    if (props.isEdit === true) {
       setType("update");
       props.handleEditClick(nombre, apellido, telefono, direccion, email, type);
     } else {

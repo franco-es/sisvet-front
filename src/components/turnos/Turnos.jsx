@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { Container, Card, Table, Button, Badge, Modal } from "react-bootstrap";
+import { Card, Table, Button, Badge, Modal } from "react-bootstrap";
+import { FaPlus, FaEdit, FaCheckCircle, FaTimesCircle, FaTrashAlt } from "react-icons/fa";
 import {
   listAppointments,
   createAppointment,
@@ -143,51 +144,49 @@ const Turnos = () => {
   };
 
   return (
-    <Container fluid className="mt-5 px-3">
-      <div className="hero-sisvet">
-        <h1 className="mb-1">Turnos</h1>
-        <p className="mb-0 opacity-90">Citas y agenda de consultas</p>
+    <div className="container-fluid turnos-page">
+      <div className="turnos-page-hero">
+        <h1>Turnos</h1>
+        <p className="turnos-page-subtitle">Citas y agenda de consultas</p>
       </div>
 
-      <Card className="card-sisvet mt-4">
-        <Card.Body>
-          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-            <div className="d-flex flex-wrap gap-2 align-items-center">
-              <Button
-                className="btn-sisvet-primary"
-                onClick={handleNewClick}
-              >
-                <i className="far fa-plus-square me-1" aria-hidden="true" />
-                Nuevo turno
-              </Button>
-              <select
-                className="form-select form-select-sm"
-                style={{ width: "auto" }}
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="">Todos los estados</option>
-                <option value="SCHEDULED">Programados</option>
-                <option value="COMPLETED">Realizados</option>
-                <option value="CANCELLED">Cancelados</option>
-              </select>
-            </div>
+      <Card className="turnos-page-card border-0">
+        <Card.Body className="p-0">
+          <div className="turnos-page-toolbar px-0">
+            <Button
+              className="btn-sisvet-primary d-inline-flex align-items-center gap-2"
+              onClick={handleNewClick}
+            >
+              <FaPlus aria-hidden />
+              Nuevo turno
+            </Button>
+            <select
+              className="turnos-page-filter form-select"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              aria-label="Filtrar por estado"
+            >
+              <option value="">Todos los estados</option>
+              <option value="SCHEDULED">Programados</option>
+              <option value="COMPLETED">Realizados</option>
+              <option value="CANCELLED">Cancelados</option>
+            </select>
           </div>
 
           {loading ? (
-            <p className="mb-0 text-muted">Cargando turnos...</p>
+            <p className="mb-0 text-muted py-4">Cargando turnos...</p>
           ) : appointments.length === 0 ? (
-            <p className="mb-0 text-muted">No hay turnos. Creá uno con «Nuevo turno».</p>
+            <p className="mb-0 text-muted py-4">No hay turnos. Creá uno con «Nuevo turno».</p>
           ) : (
             <div className="table-responsive">
-              <Table striped hover className="table-sisvet-procedure">
+              <Table hover className="turnos-page-table align-middle">
                 <thead>
                   <tr>
                     <th>Fecha y hora</th>
                     <th>Mascota</th>
                     <th>Motivo</th>
                     <th>Estado</th>
-                    <th style={{ width: "180px" }}>Acciones</th>
+                    <th className="text-center" style={{ width: "180px", minWidth: "180px" }}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -198,7 +197,7 @@ const Turnos = () => {
                         <td>{formatDateTime(apt.scheduledAt)}</td>
                         <td>
                           {apt.petId ? (
-                            <Link to={`/pet/${apt.petId}`} className="text-sisvet-cobalto text-decoration-none fw-medium">
+                            <Link to={`/pet/${apt.petId}`} className="text-decoration-none text-dark fw-medium">
                               {apt.petName ?? `#${apt.petId}`}
                             </Link>
                           ) : (
@@ -209,9 +208,11 @@ const Turnos = () => {
                           {apt.description || "—"}
                         </td>
                         <td>
-                          <Badge bg={statusInfo.variant}>{statusInfo.text}</Badge>
+                          <Badge bg={statusInfo.variant} className="turnos-page-badge">
+                            {statusInfo.text}
+                          </Badge>
                         </td>
-                        <td className="procedure-actions">
+                        <td className="text-center turnos-page-actions">
                           {apt.status === "SCHEDULED" && (
                             <>
                               <button
@@ -219,9 +220,9 @@ const Turnos = () => {
                                 className="btn-icon"
                                 onClick={() => handleEditClick(apt)}
                                 title="Editar"
-                                aria-label="Editar"
+                                aria-label="Editar turno"
                               >
-                                <i className="far fa-edit" />
+                                <FaEdit />
                               </button>
                               <button
                                 type="button"
@@ -230,7 +231,7 @@ const Turnos = () => {
                                 title="Marcar realizado"
                                 aria-label="Marcar realizado"
                               >
-                                <i className="far fa-check-circle" />
+                                <FaCheckCircle />
                               </button>
                               <button
                                 type="button"
@@ -239,7 +240,7 @@ const Turnos = () => {
                                 title="Cancelar turno"
                                 aria-label="Cancelar turno"
                               >
-                                <i className="far fa-times-circle" />
+                                <FaTimesCircle />
                               </button>
                             </>
                           )}
@@ -248,9 +249,9 @@ const Turnos = () => {
                             className="btn-icon btn-icon-danger"
                             onClick={() => handleDelete(apt.id)}
                             title="Eliminar"
-                            aria-label="Eliminar"
+                            aria-label="Eliminar turno"
                           >
-                            <i className="far fa-trash-alt" />
+                            <FaTrashAlt />
                           </button>
                         </td>
                       </tr>
@@ -312,7 +313,7 @@ const Turnos = () => {
         onSuccess={handleAddPetSuccess}
         initialName={addPetInitialName}
       />
-    </Container>
+    </div>
   );
 };
 

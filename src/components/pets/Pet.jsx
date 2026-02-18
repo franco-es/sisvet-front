@@ -1,8 +1,7 @@
-// LIBRERIAS REQUERIDAS
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Container, Card, Button, Row, Col, ListGroup } from "react-bootstrap";
-// IMPORTACIONES PROPIAS
+import { Row, Col, Card, Button, Nav, Tab } from "react-bootstrap";
+import { FaCalendarPlus } from "react-icons/fa";
 import { UniquePet, listSpecies, updatePet } from "../../services/pets";
 import { downloadPetProceduresReport } from "../../services/reports";
 import ListConsultas from "./Consultas/ListConsultas";
@@ -84,34 +83,37 @@ const Pet = () => {
       }
     );
   }
+  const ageText = edad ? moment(edad, "YYYY-MM-DD").fromNow(true) : "—";
+
   return (
-    <Container fluid className="mt-5 px-3">
-      <div className="hero-sisvet">
-        <h1 className="mb-1">Pets</h1>
-        <p className="mb-0 opacity-90">Gestiona tus mascotas aquí</p>
+    <div className="container-fluid pet-detail-page">
+      <div className="pet-detail-hero">
+        <h1>{nombre || "—"}</h1>
+        <p className="pet-detail-subtitle">Ficha de la mascota</p>
       </div>
-      <Row>
+
+      <Row className="g-3">
         <Col xs={12} md={6}>
-          <Card className="card-sisvet border-0">
+          <Card className="pet-detail-card border-0">
             <Card.Body>
-              <Card.Title className="text-center text-sisvet-cobalto">{nombre}</Card.Title>
-              <Card.Text>
-                <ListGroup variant="flush">
-                  <ListGroup.Item>
-                    <b>Especie:</b> {especie}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Pelaje:</b> {color}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Raza:</b> {raza}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Edad:</b> {moment(edad, "YYYY-MM-DD").fromNow(true)}
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card.Text>
-              <div className="d-flex gap-2 flex-wrap">
+              <h2 className="pet-detail-name">{nombre || "—"}</h2>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Especie</span>
+                <span className="pet-detail-value">{especie || "—"}</span>
+              </div>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Pelaje</span>
+                <span className="pet-detail-value">{color || "—"}</span>
+              </div>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Raza</span>
+                <span className="pet-detail-value">{raza || "—"}</span>
+              </div>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Edad</span>
+                <span className="pet-detail-value">{ageText}</span>
+              </div>
+              <div className="pet-detail-actions">
                 <Button
                   className="btn-sisvet-outline-cobalto"
                   onClick={showEditModalFunction}
@@ -123,47 +125,66 @@ const Pet = () => {
                   to={`/turnos?petId=${id}`}
                   className="btn-sisvet-primary"
                 >
-                  <i className="far fa-calendar-plus me-1" aria-hidden="true" />
+                  <FaCalendarPlus className="me-1" aria-hidden />
                   Agendar turno
                 </Button>
               </div>
             </Card.Body>
           </Card>
         </Col>
-        <Col>
-          <Owner owner={owner} />
+        <Col xs={12} md={6}>
+          <Owner owner={owner} cardClassName="pet-detail-card" />
         </Col>
       </Row>
-      <Row className="mt-3 align-items-center">
-        <Col>
-          <span className="text-sisvet-cobalto fw-bold me-2">Informe de procedimientos</span>
-          <Button
-            size="sm"
-            className="btn-sisvet-outline-cobalto me-1"
-            onClick={() => downloadPetProceduresReport(id, "pdf")}
-          >
-            <i className="far fa-file-pdf me-1" /> PDF
-          </Button>
-          <Button
-            size="sm"
-            className="btn-sisvet-outline-cobalto"
-            onClick={() => downloadPetProceduresReport(id, "excel")}
-          >
-            <i className="far fa-file-excel me-1" /> Excel
-          </Button>
-        </Col>
-      </Row>
-      <Row className="mt-4 g-3">
-        <Col xs={12} lg={4}>
-          <ListConsultas idPet={id} consultas={consultas} token={token} />
-        </Col>
-        <Col xs={12} lg={4}>
-          <ListVacunas idPet={id} vacunas={vacunas} token={token} />
-        </Col>
-        <Col xs={12} lg={4}>
-          <ListCirugias idPet={id} cirugias={cirugias} token={token} />
-        </Col>
-      </Row>
+
+      <div className="pet-detail-report-bar">
+        <span className="pet-detail-report-label">Informe de procedimientos</span>
+        <Button
+          size="sm"
+          className="btn-sisvet-outline-cobalto"
+          onClick={() => downloadPetProceduresReport(id, "pdf")}
+        >
+          PDF
+        </Button>
+        <Button
+          size="sm"
+          className="btn-sisvet-outline-cobalto"
+          onClick={() => downloadPetProceduresReport(id, "excel")}
+        >
+          Excel
+        </Button>
+      </div>
+
+      <div className="pet-detail-procedures">
+        <Card className="card-sisvet card-procedure pet-detail-procedures-card">
+          <Card.Body className="pt-3">
+            <Tab.Container defaultActiveKey="consultas">
+              <Nav variant="tabs" className="pet-detail-procedures-nav">
+                <Nav.Item>
+                  <Nav.Link eventKey="consultas">Consultas</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="vacunas">Vacunas</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="cirugias">Cirugías</Nav.Link>
+                </Nav.Item>
+              </Nav>
+              <Tab.Content className="pet-detail-procedures-content">
+                <Tab.Pane eventKey="consultas" mountOnEnter unmountOnExit>
+                  <ListConsultas idPet={id} consultas={consultas} token={token} embeddedInTabs />
+                </Tab.Pane>
+                <Tab.Pane eventKey="vacunas" mountOnEnter unmountOnExit>
+                  <ListVacunas idPet={id} vacunas={vacunas} token={token} embeddedInTabs />
+                </Tab.Pane>
+                <Tab.Pane eventKey="cirugias" mountOnEnter unmountOnExit>
+                  <ListCirugias idPet={id} cirugias={cirugias} token={token} embeddedInTabs />
+                </Tab.Pane>
+              </Tab.Content>
+            </Tab.Container>
+          </Card.Body>
+        </Card>
+      </div>
       <EditPet
         show={showEditModal}
         handleCloseAddClick={hideEditModalFunction}
@@ -176,7 +197,7 @@ const Pet = () => {
         color={color}
         raza={raza}
       />
-    </Container>
+    </div>
   );
 };
 

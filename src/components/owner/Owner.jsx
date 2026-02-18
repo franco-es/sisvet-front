@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
-// BOOTSTRAP
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import ListGroup from "react-bootstrap/ListGroup";
-
-// PROPIOS
 import AddEditOwner from "./AddEditOwner";
 import { addOwnerAPI, editOwnerAPI, getOwner } from "../../services/owner";
 
 const Owner = (props) => {
+  const { cardClassName = "pet-detail-card" } = props;
   const [showOwnerModal, SetShowOwnerModal] = useState(false);
   const [token] = useState(localStorage.getItem("token"));
   const [isEdit, setIsEdit] = useState(false);
@@ -103,47 +100,50 @@ const Owner = (props) => {
   }
   return (
     <>
-      <Card className="card-sisvet border-0">
+      <Card className={`${cardClassName} border-0`}>
         <Card.Body>
-          <Card.Title className="text-sisvet-cobalto">Propietario</Card.Title>
-          <Card.Text>
-            {owner === true ? (
-              <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <b>Nombre:</b> {nombre}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <b>Apellido:</b> {apellido}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <b>Direccion:</b> {direccion}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <b>Telefono:</b> {telefono}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <b>Email:</b> {email}
-                </ListGroup.Item>
-              </ListGroup>
-            ) : (
-              <p>Agreguemos un owner</p>
-            )}
-          </Card.Text>
-
+          <h2 className="pet-detail-card-title">Propietario</h2>
           {owner === true ? (
-            <Button
-              className="btn-sisvet-outline-cobalto"
-              onClick={showOwnerEditModalFunction}
-            >
-              Editar
-            </Button>
+            <>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Nombre</span>
+                <span className="pet-detail-value">{nombre || "—"}</span>
+              </div>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Apellido</span>
+                <span className="pet-detail-value">{apellido || "—"}</span>
+              </div>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Dirección</span>
+                <span className="pet-detail-value">{direccion || "—"}</span>
+              </div>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Teléfono</span>
+                <span className="pet-detail-value">{telefono || "—"}</span>
+              </div>
+              <div className="pet-detail-row">
+                <span className="pet-detail-label">Email</span>
+                <span className="pet-detail-value">{email || "—"}</span>
+              </div>
+              <div className="pet-detail-actions">
+                <Button
+                  className="btn-sisvet-outline-cobalto"
+                  onClick={showOwnerEditModalFunction}
+                >
+                  Editar
+                </Button>
+              </div>
+            </>
           ) : (
-            <Button
-              className="btn-sisvet-primary me-2"
-              onClick={showOwnerModalFunction}
-            >
-              Agregar
-            </Button>
+            <>
+              <p className="text-muted mb-3">Aún no hay propietario asignado.</p>
+              <Button
+                className="btn-sisvet-primary"
+                onClick={showOwnerModalFunction}
+              >
+                Agregar propietario
+              </Button>
+            </>
           )}
         </Card.Body>
       </Card>

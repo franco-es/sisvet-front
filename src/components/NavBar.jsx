@@ -43,11 +43,11 @@ const NavBar = ({ auth, onLogout }) => {
                 {t("nav.pets")}
               </Nav.Link>
             )}
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <Nav.Link as={NavLink} to="/owners" className="navbar-sisvet-link">
                 {t("nav.owners")}
               </Nav.Link>
-            )}
+            )} */}
             {isAuthenticated && (
               <Nav.Link as={NavLink} to="/turnos" className="navbar-sisvet-link">
                 {t("nav.appointments")}
@@ -58,11 +58,11 @@ const NavBar = ({ auth, onLogout }) => {
                 {t("nav.sales")}
               </Nav.Link>
             )}
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <Nav.Link as={NavLink} to="/transcribir" className="navbar-sisvet-link">
                 {t("nav.transcribe")}
               </Nav.Link>
-            )}
+            )} */}
             {isAuthenticated && hasAdminRole() && (
               <Nav.Link as={NavLink} to="/admin" className="navbar-sisvet-link">
                 {t("nav.admin")}

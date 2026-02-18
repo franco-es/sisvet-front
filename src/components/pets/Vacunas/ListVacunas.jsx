@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Card } from "react-bootstrap";
+import { FaPaperclip } from "react-icons/fa";
 import moment from "moment";
 import "moment/locale/es";
 import AddVacuna from "./AddVacuna";
@@ -13,6 +14,7 @@ import ReportFormatModal from "../../reports/ReportFormatModal";
 import ProcedureAttachmentsModal from "../../attachments/ProcedureAttachmentsModal";
 
 const ListVacunas = (props) => {
+  const { embeddedInTabs } = props;
   const [vacunas, setVacunas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [vacunaEnEdicion, setVacunaEnEdicion] = useState(null);
@@ -68,55 +70,53 @@ const ListVacunas = (props) => {
     setShowModal(true);
   };
 
-  return (
+  const content = (
     <>
-      <Card className="card-sisvet card-procedure h-100">
-        <Card.Body>
-          <div className="procedure-card-header">
-            <h5>Vacunas</h5>
-            <Button
-              className="btn-sisvet-primary btn-add-procedure"
-              onClick={handleAddClick}
-            >
-              <i className="far fa-plus-square" aria-hidden="true"></i>
-              Agregar vacuna
-            </Button>
-          </div>
-          {vacunas.length > 0 ? (
-            <div className="table-responsive">
-              <Table striped hover className="table-sisvet-procedure">
-                <thead>
-                  <tr>
-                    <th>Fecha</th>
-                    <th>Vacuna</th>
-                    <th>Dosis</th>
-                    <th>Lote</th>
-                    <th>Próx. dosis</th>
-                    <th style={{ width: "150px" }}>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {vacunas.map((item, index) => (
-                    <tr key={item.id ?? item._id ?? `vacuna-${index}`}>
-                      <td>{moment(item.performedAt ?? item.fecha).format("L")}</td>
-                      <td>{item.vaccineName ?? item.nombre}</td>
-                      <td>{item.dose || "—"}</td>
-                      <td>{item.lotNumber || "—"}</td>
-                      <td>
-                        {item.nextDoseAt || item.prox_aplicacion
-                          ? moment(item.nextDoseAt ?? item.prox_aplicacion).format("L")
-                          : "—"}
-                      </td>
-                      <td className="procedure-actions">
-                        <button
-                          type="button"
-                          className="btn-icon"
-                          onClick={() => setAttachmentsTarget(item)}
-                          title="Adjuntos"
-                          aria-label="Adjuntos"
-                        >
-                          <i className="far fa-paperclip" />
-                        </button>
+      <div className="procedure-card-header">
+        <h5>Vacunas</h5>
+        <Button
+          className="btn-sisvet-primary btn-add-procedure"
+          onClick={handleAddClick}
+        >
+          <i className="far fa-plus-square" aria-hidden="true"></i>
+          Agregar vacuna
+        </Button>
+      </div>
+      {vacunas.length > 0 ? (
+        <div className="table-responsive">
+          <Table striped hover className="table-sisvet-procedure">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Vacuna</th>
+                <th>Dosis</th>
+                <th>Lote</th>
+                <th>Próx. dosis</th>
+                <th style={{ width: "150px" }}>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vacunas.map((item, index) => (
+                <tr key={item.id ?? item._id ?? `vacuna-${index}`}>
+                  <td>{moment(item.performedAt ?? item.fecha).format("L")}</td>
+                  <td>{item.vaccineName ?? item.nombre}</td>
+                  <td>{item.dose || "—"}</td>
+                  <td>{item.lotNumber || "—"}</td>
+                  <td>
+                    {item.nextDoseAt || item.prox_aplicacion
+                      ? moment(item.nextDoseAt ?? item.prox_aplicacion).format("L")
+                      : "—"}
+                  </td>
+                  <td className="procedure-actions">
+                    <button
+                      type="button"
+                      className="btn-icon"
+                      onClick={() => setAttachmentsTarget(item)}
+                      title="Adjuntos"
+                      aria-label="Adjuntos"
+                    >
+                      <FaPaperclip />
+                    </button>
                         <button
                           type="button"
                           className="btn-icon"
@@ -152,12 +152,20 @@ const ListVacunas = (props) => {
                   ))}
                 </tbody>
               </Table>
-            </div>
-          ) : (
-            <p className="procedure-empty mb-0">No hay vacunas cargadas.</p>
-          )}
-        </Card.Body>
-      </Card>
+        </div>
+      ) : (
+        <p className="procedure-empty mb-0">No hay vacunas cargadas.</p>
+      )}
+    </>
+  );
+
+  return (
+    <>
+      {embeddedInTabs ? content : (
+        <Card className="card-sisvet card-procedure h-100">
+          <Card.Body>{content}</Card.Body>
+        </Card>
+      )}
       <AddVacuna
         show={showModal}
         handleCloseAddClick={handleCloseAddClick}

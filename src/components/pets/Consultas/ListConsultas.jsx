@@ -1,12 +1,10 @@
-// REACT
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import "moment/locale/es";
-// BOOTSTRAP
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-// MIOS
+import { FaPaperclip } from "react-icons/fa";
 import AddConsulta from "./AddConsulta";
 import {
   newConsult,
@@ -18,6 +16,7 @@ import ReportFormatModal from "../../reports/ReportFormatModal";
 import ProcedureAttachmentsModal from "../../attachments/ProcedureAttachmentsModal";
 
 const ListConsultas = (props) => {
+  const { embeddedInTabs } = props;
   const [consultas, setConsultas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [consultaEnEdicion, setConsultaEnEdicion] = useState(null);
@@ -86,47 +85,45 @@ const ListConsultas = (props) => {
     setShowModal(true);
   };
 
-  return (
+  const content = (
     <>
-      <Card className="card-sisvet card-procedure h-100">
-        <Card.Body>
-          <div className="procedure-card-header">
-            <h5>Consultas</h5>
-            <Button
-              className="btn-sisvet-primary btn-add-procedure"
-              onClick={handleAddClick}
-            >
-              <i className="far fa-plus-square" aria-hidden="true"></i>
-              Agregar consulta
-            </Button>
-          </div>
-          {consultas.length > 0 ? (
-            <div className="table-responsive">
-            <Table striped hover className="table-sisvet-procedure">
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Diagnóstico</th>
-                  <th style={{ width: "150px" }}>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {consultas.map((item, index) => (
-                  <tr key={item.id ?? item._id ?? `consult-${index}`}>
-                    <td>{moment(item.performedAt ?? item.fecha).format("L")}</td>
-                    <td className={!(item.diagnosis ?? item.diagnostico) ? "cell-empty" : ""}>
-                      {(item.diagnosis ?? item.diagnostico) || "—"}
-                    </td>
-                    <td className="procedure-actions">
-                      <button
-                        type="button"
-                        className="btn-icon"
-                        onClick={() => setAttachmentsTarget(item)}
-                        title="Adjuntos"
-                        aria-label="Adjuntos"
-                      >
-                        <i className="far fa-paperclip" />
-                      </button>
+      <div className="procedure-card-header">
+        <h5>Consultas</h5>
+        <Button
+          className="btn-sisvet-primary btn-add-procedure"
+          onClick={handleAddClick}
+        >
+          <i className="far fa-plus-square" aria-hidden="true"></i>
+          Agregar consulta
+        </Button>
+      </div>
+      {consultas.length > 0 ? (
+        <div className="table-responsive">
+          <Table striped hover className="table-sisvet-procedure">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Diagnóstico</th>
+                <th style={{ width: "150px" }}>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {consultas.map((item, index) => (
+                <tr key={item.id ?? item._id ?? `consult-${index}`}>
+                  <td>{moment(item.performedAt ?? item.fecha).format("L")}</td>
+                  <td className={!(item.diagnosis ?? item.diagnostico) ? "cell-empty" : ""}>
+                    {(item.diagnosis ?? item.diagnostico) || "—"}
+                  </td>
+                  <td className="procedure-actions">
+                    <button
+                      type="button"
+                      className="btn-icon"
+                      onClick={() => setAttachmentsTarget(item)}
+                      title="Adjuntos"
+                      aria-label="Adjuntos"
+                    >
+                      <FaPaperclip />
+                    </button>
                       <button
                         type="button"
                         className="btn-icon"
@@ -162,12 +159,20 @@ const ListConsultas = (props) => {
               ))}
             </tbody>
             </Table>
-            </div>
-          ) : (
-            <p className="procedure-empty mb-0">No hay consultas cargadas.</p>
-          )}
-        </Card.Body>
-      </Card>
+        </div>
+      ) : (
+        <p className="procedure-empty mb-0">No hay consultas cargadas.</p>
+      )}
+    </>
+  );
+
+  return (
+    <>
+      {embeddedInTabs ? content : (
+        <Card className="card-sisvet card-procedure h-100">
+          <Card.Body>{content}</Card.Body>
+        </Card>
+      )}
       <AddConsulta
         show={showModal}
         handleCloseAddClick={handleCloseAddClick}
