@@ -54,20 +54,29 @@ const NewSaleModal = ({ show, onClose, onSuccess, mpConfigured = false }) => {
     if (!id || quantity < 1) return;
     const product = products.find((p) => p.id === id);
     if (!product) return;
+    const unitPrice = product.unitPrice != null ? Number(product.unitPrice) : 0;
     const existing = items.find((i) => i.productId === id);
     if (existing) {
       setItems(
         items.map((i) =>
           i.productId === id
-            ? { ...i, quantity: i.quantity + quantity }
+            ? { ...i, quantity: i.quantity + quantity, unitPrice: i.unitPrice ?? unitPrice }
             : i
         )
       );
     } else {
-      setItems([...items, { productId: id, quantity, product }]);
+      setItems([...items, { productId: id, quantity, product, unitPrice }]);
     }
     setQuantity(1);
     setSelectedProductId("");
+  };
+
+  const updateItemPrice = (productId, value) => {
+    const num = parseFloat(String(value).replace(",", "."));
+    const price = isNaN(num) || num < 0 ? 0 : num;
+    setItems(
+      items.map((i) => (i.productId === productId ? { ...i, unitPrice: price } : i))
+    );
   };
 
   const removeItem = (productId) => {
@@ -75,7 +84,7 @@ const NewSaleModal = ({ show, onClose, onSuccess, mpConfigured = false }) => {
   };
 
   const total = items.reduce((sum, i) => {
-    const p = i.product && i.product.unitPrice != null ? i.product.unitPrice : 0;
+    const p = i.unitPrice != null ? Number(i.unitPrice) : (i.product?.unitPrice ?? 0);
     return sum + p * (i.quantity || 0);
   }, 0);
 
@@ -112,10 +121,14 @@ const NewSaleModal = ({ show, onClose, onSuccess, mpConfigured = false }) => {
       const body = {
         invoiceTypeConfigId: Number(invoiceTypeConfigId),
         paymentTypeConfigId: Number(paymentTypeConfigId),
-        items: items.map((i) => ({
-          productId: i.productId,
-          quantity: i.quantity,
-        })),
+        items: items.map((i) => {
+          const up = i.unitPrice != null ? Number(i.unitPrice) : (i.product?.unitPrice ?? 0);
+          return {
+            productId: i.productId,
+            quantity: i.quantity,
+            unitPrice: up,
+          };
+        }),
       };
       const data = await createSale(body);
       onClose();
@@ -229,23 +242,32 @@ const NewSaleModal = ({ show, onClose, onSuccess, mpConfigured = false }) => {
                   <tr>
                     <th>Producto</th>
                     <th>Cantidad</th>
-                    <th>P. unit.</th>
+                    <th>Precio unit.</th>
                     <th>Subtotal</th>
                     <th style={{ width: "60px" }}></th>
                   </tr>
                 </thead>
                 <tbody>
                   {items.map((i) => {
-                    const unitPrice =
-                      i.product && i.product.unitPrice != null
-                        ? i.product.unitPrice
-                        : 0;
+                    const unitPrice = i.unitPrice != null ? Number(i.unitPrice) : (i.product?.unitPrice ?? 0);
                     const subtotal = unitPrice * (i.quantity || 0);
                     return (
                       <tr key={i.productId}>
                         <td>{i.product ? i.product.name : `#${i.productId}`}</td>
                         <td>{i.quantity}</td>
-                        <td>{formatPrice(unitPrice)}</td>
+                        <td>
+                          <Form.Control
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            size="sm"
+                            className="d-inline-block"
+                            style={{ width: "100px" }}
+                            value={unitPrice || ""}
+                            onChange={(e) => updateItemPrice(i.productId, e.target.value)}
+                            placeholder="Precio"
+                          />
+                        </td>
                         <td>{formatPrice(subtotal)}</td>
                         <td>
                           <button

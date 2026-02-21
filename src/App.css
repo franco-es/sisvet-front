@@ -905,6 +905,30 @@ body {
   border-radius: 8px;
 }
 
+/* ---------- Página Ventas (mismo estilo que Turnos) ---------- */
+.ventas-page {
+  padding: 1.5rem 1rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ventas-page-hero {
+  margin-bottom: 1.5rem;
+}
+
+.ventas-page-hero h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--sisvet-cobalto);
+  margin: 0 0 0.25rem 0;
+}
+
+.ventas-page-hero .ventas-page-subtitle {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0;
+}
+
 /* Botón de dictado por voz (VoiceToTextField) */
 .voice-to-text-btn {
   display: inline-flex;

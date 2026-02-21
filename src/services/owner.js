@@ -29,7 +29,7 @@ export async function editOwnerAPI(
   email,
   type
 ) {
-  return http.put(`/owners/${idPet}`, {
+  return http.put(`/owners/by-pet/${idPet}`, {
     firstName,
     lastName,
     phone,

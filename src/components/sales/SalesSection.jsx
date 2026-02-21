@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Card, Table, Button } from "react-bootstrap";
+import React, { useState, useEffect, useMemo } from "react";
+import { Card, Table, Button, Badge } from "react-bootstrap";
+import { FaPlus, FaFileAlt, FaEye, FaTimesCircle } from "react-icons/fa";
 import { listSales, cancelSale } from "../../services/sales";
 import { downloadSaleReport } from "../../services/reports";
 import { getMercadoPagoStatus, createMercadoPagoPreference } from "../../services/payments";
@@ -8,9 +9,16 @@ import ReportFormatModal from "../reports/ReportFormatModal";
 import NewSaleModal from "./NewSaleModal";
 import SaleDetailModal from "./SaleDetailModal";
 
+const STATUS_LABELS = {
+  COMPLETED: { text: "Completada", variant: "success" },
+  PENDING: { text: "Pendiente", variant: "warning" },
+  CANCELLED: { text: "Cancelada", variant: "secondary" },
+};
+
 const SalesSection = () => {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("");
   const [showNewModal, setShowNewModal] = useState(false);
   const [detailSaleId, setDetailSaleId] = useState(null);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -70,6 +78,7 @@ const SalesSection = () => {
   const formatDate = (value) => {
     if (!value) return "—";
     return new Date(value).toLocaleDateString("es-AR", {
+      weekday: "short",
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -77,6 +86,11 @@ const SalesSection = () => {
       minute: "2-digit",
     });
   };
+
+  const filteredSales = useMemo(() => {
+    if (!statusFilter) return sales;
+    return sales.filter((s) => (s.status || "").toUpperCase() === statusFilter);
+  }, [sales, statusFilter]);
 
   const statusLabel = (s) => {
     if (s === "COMPLETED") return "Completada";
@@ -128,100 +142,120 @@ const SalesSection = () => {
 
   return (
     <>
-      <Card className="card-sisvet card-procedure h-100">
-        <Card.Body>
-          <div className="procedure-card-header">
-            <h5>Ventas</h5>
+      <Card className="turnos-page-card border-0 h-100">
+        <Card.Body className="p-0">
+          <div className="turnos-page-toolbar px-0">
             <Button
-              className="btn-sisvet-primary btn-add-procedure"
+              className="btn-sisvet-primary d-inline-flex align-items-center gap-2"
               onClick={() => setShowNewModal(true)}
             >
-              <i className="far fa-plus-square" aria-hidden="true"></i>
+              <FaPlus aria-hidden />
               Nueva venta
             </Button>
+            <select
+              className="turnos-page-filter form-select"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              aria-label="Filtrar por estado"
+            >
+              <option value="">Todos los estados</option>
+              <option value="COMPLETED">Completadas</option>
+              <option value="PENDING">Pendientes</option>
+              <option value="CANCELLED">Canceladas</option>
+            </select>
           </div>
+
           {loading ? (
-            <p className="procedure-empty mb-0">Cargando...</p>
+            <p className="mb-0 text-muted py-4">Cargando ventas...</p>
           ) : sales.length === 0 ? (
-            <p className="procedure-empty mb-0">No hay ventas registradas.</p>
+            <p className="mb-0 text-muted py-4">No hay ventas registradas. Creá una con «Nueva venta».</p>
+          ) : filteredSales.length === 0 ? (
+            <p className="mb-0 text-muted py-4">No hay ventas con el filtro seleccionado.</p>
           ) : (
             <div className="table-responsive">
-              <Table striped hover className="table-sisvet-procedure">
+              <Table hover className="turnos-page-table align-middle">
                 <thead>
                   <tr>
-                    <th>Fecha</th>
+                    <th>Fecha y hora</th>
                     <th>Total</th>
                     <th>Factura</th>
                     <th>Tipo pago</th>
                     <th>Estado</th>
                     <th>Estado pago</th>
-                    <th style={{ width: "180px" }}>Acciones</th>
+                    <th className="text-center" style={{ width: "140px", minWidth: "140px" }}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sales.map((s) => (
-                    <tr key={s.id}>
-                      <td>{formatDate(s.saleDate)}</td>
-                      <td>{formatPrice(s.total)}</td>
-                      <td>
-                        {s.invoiceTypeName ?? invoiceTypeLabel(s.invoiceType)}
-                        {s.electronicInvoiceCae && (
-                          <span className="ms-1 text-success" title="Factura electrónica emitida">
-                            <i className="fas fa-file-invoice" aria-hidden="true"></i>
-                          </span>
-                        )}
-                      </td>
-                      <td>{s.paymentTypeName ?? paymentTypeLabel(s.paymentType)}</td>
-                      <td>{statusLabel(s.status)}</td>
-                      <td>
-                        {paymentStatusLabel(s.paymentStatus)}
-                        {s.paymentStatus === "PENDING_PAYMENT" && mpConfigured && (
-                          <Button
-                            size="sm"
-                            className="btn-sisvet-primary ms-2"
-                            disabled={payingSaleId === s.id}
-                            onClick={() => handlePayWithMP(s)}
-                          >
-                            {payingSaleId === s.id ? "..." : "Pagar con MP"}
-                          </Button>
-                        )}
-                      </td>
-                      <td className="procedure-actions">
-                        <button
-                          type="button"
-                          className="btn-icon"
-                          onClick={() => {
-                            setReportSaleId(s.id);
-                            setShowReportModal(true);
-                          }}
-                          title="Descargar informe"
-                          aria-label="Descargar informe"
-                        >
-                          <i className="far fa-file-alt" />
-                        </button>
-                        <button
-                          type="button"
-                          className="btn-icon"
-                          onClick={() => setDetailSaleId(s.id)}
-                          title="Ver detalle"
-                          aria-label="Ver detalle"
-                        >
-                          <i className="far fa-eye"></i>
-                        </button>
-                        {s.status === "PENDING" && (
+                  {filteredSales.map((s) => {
+                    const statusInfo = STATUS_LABELS[s.status] || { text: statusLabel(s.status), variant: "secondary" };
+                    return (
+                      <tr key={s.id}>
+                        <td>{formatDate(s.saleDate)}</td>
+                        <td>{formatPrice(s.total)}</td>
+                        <td>
+                          {s.invoiceTypeName ?? invoiceTypeLabel(s.invoiceType)}
+                          {s.electronicInvoiceCae && (
+                            <span className="ms-1 text-success" title="Factura electrónica emitida">
+                              <i className="fas fa-file-invoice" aria-hidden="true"></i>
+                            </span>
+                          )}
+                        </td>
+                        <td>{s.paymentTypeName ?? paymentTypeLabel(s.paymentType)}</td>
+                        <td>
+                          <Badge bg={statusInfo.variant} className="turnos-page-badge">
+                            {statusInfo.text}
+                          </Badge>
+                        </td>
+                        <td>
+                          {paymentStatusLabel(s.paymentStatus)}
+                          {s.paymentStatus === "PENDING_PAYMENT" && mpConfigured && (
+                            <Button
+                              size="sm"
+                              className="btn-sisvet-primary ms-2"
+                              disabled={payingSaleId === s.id}
+                              onClick={() => handlePayWithMP(s)}
+                            >
+                              {payingSaleId === s.id ? "..." : "Pagar con MP"}
+                            </Button>
+                          )}
+                        </td>
+                        <td className="text-center turnos-page-actions">
                           <button
                             type="button"
-                            className="btn-icon btn-icon-danger"
-                            onClick={() => handleCancel(s.id)}
-                            title="Cancelar venta"
-                            aria-label="Cancelar venta"
+                            className="btn-icon"
+                            onClick={() => {
+                              setReportSaleId(s.id);
+                              setShowReportModal(true);
+                            }}
+                            title="Descargar informe"
+                            aria-label="Descargar informe"
                           >
-                            <i className="far fa-times-circle"></i>
+                            <FaFileAlt />
                           </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                          <button
+                            type="button"
+                            className="btn-icon"
+                            onClick={() => setDetailSaleId(s.id)}
+                            title="Ver detalle"
+                            aria-label="Ver detalle"
+                          >
+                            <FaEye />
+                          </button>
+                          {s.status === "PENDING" && (
+                            <button
+                              type="button"
+                              className="btn-icon btn-icon-danger"
+                              onClick={() => handleCancel(s.id)}
+                              title="Cancelar venta"
+                              aria-label="Cancelar venta"
+                            >
+                              <FaTimesCircle />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </Table>
             </div>

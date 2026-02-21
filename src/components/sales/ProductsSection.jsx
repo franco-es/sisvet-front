@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Table, Button } from "react-bootstrap";
+import { FaPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
 import {
   listProducts,
   createProduct,
@@ -83,32 +84,32 @@ const ProductsSection = () => {
 
   return (
     <>
-      <Card className="card-sisvet card-procedure h-100">
-        <Card.Body>
-          <div className="procedure-card-header">
-            <h5>Productos</h5>
+      <Card className="turnos-page-card border-0 h-100">
+        <Card.Body className="p-0">
+          <div className="turnos-page-toolbar px-0">
             <Button
-              className="btn-sisvet-primary btn-add-procedure"
+              className="btn-sisvet-primary d-inline-flex align-items-center gap-2"
               onClick={openAdd}
             >
-              <i className="far fa-plus-square" aria-hidden="true"></i>
+              <FaPlus aria-hidden />
               Agregar producto
             </Button>
           </div>
+
           {loading ? (
-            <p className="procedure-empty mb-0">Cargando...</p>
+            <p className="mb-0 text-muted py-4">Cargando productos...</p>
           ) : products.length === 0 ? (
-            <p className="procedure-empty mb-0">No hay productos cargados.</p>
+            <p className="mb-0 text-muted py-4">No hay productos cargados. Creá uno con «Agregar producto».</p>
           ) : (
             <div className="table-responsive">
-              <Table striped hover className="table-sisvet-procedure">
+              <Table hover className="turnos-page-table align-middle">
                 <thead>
                   <tr>
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Precio</th>
                     <th>Stock</th>
-                    <th style={{ width: "100px" }}>Acciones</th>
+                    <th className="text-center" style={{ width: "120px", minWidth: "120px" }}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,7 +119,7 @@ const ProductsSection = () => {
                       <td>{p.name || "—"}</td>
                       <td>{formatPrice(p.unitPrice)}</td>
                       <td>{p.stock != null ? p.stock : "—"}</td>
-                      <td className="procedure-actions">
+                      <td className="text-center turnos-page-actions">
                         <button
                           type="button"
                           className="btn-icon"
@@ -126,7 +127,7 @@ const ProductsSection = () => {
                           title="Editar"
                           aria-label="Editar producto"
                         >
-                          <i className="far fa-edit"></i>
+                          <FaEdit />
                         </button>
                         <button
                           type="button"
@@ -135,7 +136,7 @@ const ProductsSection = () => {
                           title="Eliminar"
                           aria-label="Eliminar producto"
                         >
-                          <i className="far fa-trash-alt"></i>
+                          <FaTrashAlt />
                         </button>
                       </td>
                     </tr>

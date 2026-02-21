@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { hasVentasRole } from "../../utils/auth";
 import ProductsSection from "./ProductsSection";
@@ -24,12 +24,13 @@ const Ventas = () => {
   }
 
   return (
-    <Container fluid className="mt-5 px-3">
-      <div className="hero-sisvet">
-        <h1 className="mb-1">Ventas</h1>
-        <p className="mb-0 opacity-90">Productos y ventas del local</p>
+    <div className="container-fluid ventas-page">
+      <div className="ventas-page-hero">
+        <h1>Ventas</h1>
+        <p className="ventas-page-subtitle">Productos y ventas del local</p>
       </div>
-      <Row className="mt-4 g-3">
+
+      <Row className="ventas-page-cards g-4">
         <Col xs={12} lg={6}>
           <ProductsSection />
         </Col>
@@ -37,7 +38,7 @@ const Ventas = () => {
           <SalesSection />
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 };
 
